@@ -124,6 +124,22 @@
       width: 0%;
       transition: width 0.3s ease;
     }
+    #blockScreen {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: #111;
+      z-index: 9999;
+      color: white;
+      font-size: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
   </style>
 </head>
 <body>
@@ -142,6 +158,10 @@
 
   <div class="upgrades" id="upgradesContainer"></div>
 
+  <div id="blockScreen">
+    <p style="margin: 0 1rem; text-align:center;">🔒 Untersuchen ist deaktiviert.<br>Diese Aktion ist nicht erlaubt.</p>
+  </div>
+
   <script>
     let points = 0;
     let perClick = 1;
@@ -151,16 +171,8 @@
     const maxClicks = 8;
 
     const upgradeNames = [
-      "Rita",
-      "Leute",
-      "Hallo Leute",
-      "Jetzt hört aber auf",
-      "mir ist es egal",
-      "abschlussfest solo",
-      "Zeichenunterricht",
-      "rita ausraster",
-      "ritalover99",
-      "was heißt auto auf englisch"
+      "Rita", "Leute", "Hallo Leute", "Jetzt hört aber auf", "mir ist es egal",
+      "abschlussfest solo", "Zeichenunterricht", "rita ausraster", "ritalover99", "was heißt auto auf englisch"
     ];
 
     const upgrades = upgradeNames.map((name, i) => ({
@@ -180,6 +192,20 @@
         points = 0;
         updateUI();
         return;
+      }
+
+      const intervalDiffs = [];
+      for (let i = 1; i < clickTimestamps.length; i++) {
+        intervalDiffs.push(clickTimestamps[i] - clickTimestamps[i - 1]);
+      }
+      if (intervalDiffs.length >= 4) {
+        const isSuspicious = intervalDiffs.every(diff => Math.abs(diff - intervalDiffs[0]) <= 5);
+        if (isSuspicious) {
+          alert("Kein Autoclicker du Hund");
+          points = 0;
+          updateUI();
+          return;
+        }
       }
 
       points += perClick;
@@ -256,6 +282,10 @@
       updateUpgradeButtons();
     }
 
+    function showBlockScreen() {
+      document.getElementById("blockScreen").style.display = "flex";
+    }
+
     setInterval(() => {
       points += autoPoints;
       updateUI();
@@ -265,8 +295,7 @@
 
     document.addEventListener("contextmenu", e => {
       e.preventDefault();
-      alert("Untersuchen ist deaktiviert.");
-      window.close();
+      showBlockScreen();
     });
     document.addEventListener("keydown", e => {
       if (
@@ -275,8 +304,7 @@
         (e.ctrlKey && e.key === "U")
       ) {
         e.preventDefault();
-        alert("Aktion nicht erlaubt.");
-        window.close();
+        showBlockScreen();
       }
     });
 
