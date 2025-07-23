@@ -5,9 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Rita Clicker Spiel</title>
   <style>
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
+
     body {
       margin: 0;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -16,16 +15,16 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: start;
       min-height: 100vh;
       padding: 2rem;
       user-select: none;
     }
+
     h1 {
-      margin-bottom: 2rem;
+      margin-bottom: 1rem;
       font-size: 2rem;
-      color: #f5f5f5;
     }
+
     .circle {
       width: 140px;
       height: 140px;
@@ -37,16 +36,36 @@
       cursor: pointer;
       box-shadow: 0 0 20px #ff6347;
       transition: transform 0.1s ease-in-out;
+      margin-bottom: 1rem;
     }
+
     .circle:active {
       transform: scale(0.95);
     }
+
+    .progress-bar-container {
+      width: 300px;
+      height: 20px;
+      background: #444;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 1.5rem;
+      box-shadow: inset 0 0 5px rgba(0,0,0,0.5);
+    }
+
+    .progress-bar {
+      height: 100%;
+      background: linear-gradient(to right, #00ff99, #00ccff);
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
     .stats {
-      margin-top: 1.5rem;
       font-size: 1.1rem;
       text-align: center;
       line-height: 1.6;
     }
+
     .upgrades {
       margin-top: 2rem;
       display: grid;
@@ -55,6 +74,7 @@
       width: 100%;
       max-width: 900px;
     }
+
     .upgrade {
       background: #3d3d5c;
       padding: 1rem;
@@ -65,20 +85,23 @@
       align-items: flex-start;
       transition: transform 0.2s ease, background 0.3s ease;
     }
+
     .upgrade:hover {
       transform: scale(1.02);
       background: #48486b;
     }
+
     .upgrade strong {
       font-size: 1rem;
       margin-bottom: 0.5rem;
-      color: #ffffff;
     }
+
     .upgrade p {
       font-size: 0.9rem;
       margin: 0;
-      color: #ddd;
+      color: #ccc;
     }
+
     .upgrade button {
       margin-top: 0.8rem;
       padding: 0.5rem 1rem;
@@ -93,10 +116,12 @@
       opacity: 0.4;
       pointer-events: none;
     }
+
     .upgrade button.enabled {
       opacity: 1;
       pointer-events: auto;
     }
+
     .upgrade button:hover.enabled {
       background: linear-gradient(to right, #2ecc71, #27ae60);
     }
@@ -104,12 +129,19 @@
 </head>
 <body>
   <h1>Rita Clicker Spiel</h1>
+
   <div class="circle" id="clickCircle"></div>
+
+  <div class="progress-bar-container">
+    <div class="progress-bar" id="progressBar"></div>
+  </div>
+
   <div class="stats">
     <div>Rita Punkte: <span id="points">0</span></div>
     <div>Pro Klick: <span id="perClick">1</span></div>
     <div>RPS: <span id="autoPoints">0</span></div>
   </div>
+
   <div class="upgrades" id="upgradesContainer"></div>
 
   <script>
@@ -133,6 +165,14 @@
       document.getElementById("perClick").textContent = perClick;
       document.getElementById("autoPoints").textContent = autoPoints;
       updateUpgradeButtons();
+      updateProgressBar();
+    }
+
+    function updateProgressBar() {
+      const nextUpgrade = upgrades.find(upg => points < upg.cost);
+      const nextCost = nextUpgrade ? nextUpgrade.cost : points + 100;
+      const percent = Math.min(100, (points / nextCost) * 100);
+      document.getElementById("progressBar").style.width = percent + "%";
     }
 
     function renderUpgrades() {
@@ -192,7 +232,7 @@
     renderUpgrades();
     updateUI();
 
-    // Schutz vor Rechtsklick & Dev-Tools (oberflächlich)
+    // Rechtsklick und Dev-Tools blockieren (nicht 100% sicher)
     document.addEventListener("contextmenu", e => e.preventDefault());
     document.addEventListener("keydown", e => {
       if (
@@ -201,27 +241,9 @@
         (e.ctrlKey && e.key === "U")
       ) {
         e.preventDefault();
-        alert("Untersuchen ist deaktiviert.");
+        alert("Untersuchen deaktiviert.");
       }
     });
   </script>
 </body>
 </html>
-Wenn du möchtest, kann ich zusätzlich noch ein Logo, Soundeffekte oder einen Fortschrittsbalken einbauen. Sag einfach Bescheid!
-
-
-
-
-
-
-
-
-
-ChatGPT fragen
-
-
-
-Tools
-
-
-
