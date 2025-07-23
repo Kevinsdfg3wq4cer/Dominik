@@ -1,274 +1,254 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Rita Clicker</title>
-  <style>
-    * {
-      box-sizing: border-box;
-    }
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(135deg, #1e1e2f, #2f2f4f);
-      color: #fff;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 2rem;
-    }
-    h1 {
-      font-size: 2rem;
-      margin-bottom: 1rem;
-    }
-    .circle {
-      width: 140px;
-      height: 140px;
-      border-radius: 50%;
-      background-image: url('37301b00-4ec2-4c5f-b39f-1e4dce5b70e2.png');
-      background-size: cover;
-      background-position: center;
-      box-shadow: 0 0 20px #ff6347;
-      cursor: pointer;
-      transition: transform 0.1s ease, box-shadow 0.3s ease;
-      margin-bottom: 1rem;
-    }
-    .circle:active {
-      transform: scale(0.95);
-      box-shadow: 0 0 30px #ff6347;
-    }
-    .progress-container {
-      width: 300px;
-      height: 20px;
-      background: #333;
-      border-radius: 10px;
-      margin-bottom: 1rem;
-      overflow: hidden;
-    }
-    .progress-bar {
-      height: 100%;
-      background: linear-gradient(to right, #ff6347, #ffa07a);
-      width: 0%;
-      transition: width 0.3s ease;
-    }
-    .stats {
-      font-size: 1.1rem;
-      text-align: center;
-    }
-    .upgrades {
-      margin-top: 2rem;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 1rem;
-      width: 100%;
-      max-width: 900px;
-    }
-    .upgrade {
-      background: #3d3d5c;
-      padding: 1rem;
-      border-radius: 12px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      transition: transform 0.2s ease, background 0.3s ease;
-    }
-    .upgrade:hover {
-      transform: scale(1.02);
-      background: #48486b;
-    }
-    .upgrade img {
-      width: 32px;
-      height: 32px;
-      margin-bottom: 0.5rem;
-    }
-    .upgrade strong {
-      font-size: 1rem;
-      margin-bottom: 0.5rem;
-    }
-    .upgrade p {
-      font-size: 0.9rem;
-      margin: 0;
-      color: #ddd;
-    }
-    .upgrade button {
-      margin-top: 0.8rem;
-      padding: 0.5rem 1rem;
-      background: linear-gradient(to right, #28a745, #218838);
-      color: #fff;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: 600;
-      font-size: 0.9rem;
-      transition: all 0.3s ease;
-      opacity: 0.4;
-      pointer-events: none;
-    }
-    .upgrade button.enabled {
-      opacity: 1;
-      pointer-events: auto;
-    }
-    .upgrade button:hover.enabled {
-      background: linear-gradient(to right, #2ecc71, #27ae60);
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rita Clicker Spiel</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #1e1e2f, #2f2f4f);
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: start;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+        h1 {
+            margin-bottom: 2rem;
+        }
+        .circle {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            background-image: url('37301b00-4ec2-4c5f-b39f-1e4dce5b70e2.png');
+            background-size: cover;
+            background-position: center;
+            cursor: pointer;
+            box-shadow: 0 0 20px #ff6347;
+            transition: transform 0.1s ease-in-out;
+            margin-bottom: 1rem;
+        }
+        .circle:active {
+            transform: scale(0.95);
+        }
+        .progress-info {
+            font-size: 0.9rem;
+            color: #ccc;
+            margin-bottom: 0.4rem;
+            text-align: center;
+        }
+        .progress-container {
+            width: 200px;
+            height: 8px;
+            background: #222;
+            border: 1px solid #555;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+            overflow: hidden;
+        }
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: #ff6347;
+            transition: width 0.2s linear;
+        }
+        .stats {
+            margin-top: 1rem;
+            font-size: 1.2rem;
+            text-align: center;
+        }
+        .upgrades {
+            margin-top: 2rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            width: 100%;
+            max-width: 1000px;
+        }
+        .upgrade {
+            background: #555;
+            padding: 1rem;
+            border-radius: 16px;
+            box-shadow: 0 0 12px rgba(255,255,255,0.2);
+            display: flex;
+            flex-direction: column;
+            align-items: start;
+            transition: transform 0.3s ease;
+        }
+        .upgrade:hover {
+            transform: scale(1.03);
+        }
+        .upgrade button {
+            margin-top: 1rem;
+            padding: 0.6rem 1.2rem;
+            background: linear-gradient(to right, #28a745, #218838);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            opacity: 0.4;
+            pointer-events: none;
+        }
+        .upgrade button.enabled {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .upgrade button:hover.enabled {
+            background: linear-gradient(to right, #2ecc71, #27ae60);
+        }
+    </style>
 </head>
 <body>
-  <h1>Rita Clicker Spiel</h1>
-  <div class="circle" id="clickCircle"></div>
-  <div class="progress-container">
-    <div class="progress-bar" id="progressBar"></div>
-  </div>
-  <div class="stats">
-    <div>Rita Punkte: <span id="points">0</span></div>
-    <div>Pro Klick: <span id="perClick">1</span></div>
-    <div>RPS: <span id="autoPoints">0</span></div>
-  </div>
-  <div class="upgrades" id="upgradesContainer"></div>
+    <h1>Rita Clicker Spiel</h1>
+    <div class="circle" id="clickCircle"></div>
+    <div class="progress-info" id="progressInfo">Noch 0 Punkte bis zum nächsten Upgrade</div>
+    <div class="progress-container">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
+    <div class="stats">
+        <div>Rita Punkte: <span id="points">0</span></div>
+        <div>Pro Klick: <span id="perClick">1</span></div>
+        <div>RPS: <span id="autoPoints">0</span></div>
+    </div>
+    <div class="upgrades" id="upgradesContainer"></div>
 
-  <script>
-    let points = 0;
-    let perClick = 1;
-    let autoPoints = 0;
+    <script>
+        let points = 0;
+        let perClick = 1;
+        let autoPoints = 0;
 
-    const progressBar = document.getElementById("progressBar");
-    const clickCircle = document.getElementById("clickCircle");
+        const upgradeNames = [
+            "Rita",
+            "Leute",
+            "Hallo Leute",
+            "Jetzt hört aber auf",
+            "mir ist es egal",
+            "abschlussfest solo",
+            "Zeichenunterricht",
+            "rita ausraster",
+            "ritalover99",
+            "was heißt auto auf englisch"
+        ];
 
-    const upgradeNames = [
-      "Rita",
-      "Leute",
-      "Hallo Leute",
-      "Jetzt hört aber auf",
-      "mir ist es egal",
-      "abschlussfest solo",
-      "Zeichenunterricht",
-      "rita ausraster",
-      "ritalover99",
-      "was heißt auto auf englisch"
-    ];
-
-    const upgradeIcons = [
-      "🍕", "👥", "📣", "🛑", "😐", "🎉", "✏️", "💢", "❤️", "🚗"
-    ];
-
-    const upgrades = [];
-
-    for (let i = 0; i < upgradeNames.length; i++) {
-      const autoBonus = 5 * Math.pow(2, i);
-      upgrades.push({
-        name: upgradeNames[i],
-        cost: Math.ceil(50 * Math.pow(2.5, i + 1)),
-        icon: upgradeIcons[i],
-        effect: () => {
-          autoPoints += autoBonus;
+        const upgrades = [];
+        for (let i = 0; i < upgradeNames.length; i++) {
+            const autoBonus = 5 * Math.pow(2, i);
+            upgrades.push({
+                name: upgradeNames[i],
+                cost: Math.ceil(50 * Math.pow(2.5, i + 1)),
+                effect: () => {
+                    autoPoints += autoBonus;
+                }
+            });
         }
-      });
-    }
 
-    function playSound() {
-      const utterance = new SpeechSynthesisUtterance("Ritaaaa!");
-      utterance.lang = "de-DE";
-      speechSynthesis.speak(utterance);
-    }
-
-    function updateProgressBar() {
-      const progress = Math.min((points % 100) / 100 * 100, 100);
-      progressBar.style.width = progress + "%";
-    }
-
-    function updateUI() {
-      document.getElementById('points').textContent = points;
-      document.getElementById('perClick').textContent = perClick;
-      document.getElementById('autoPoints').textContent = autoPoints;
-      updateProgressBar();
-      updateUpgradeButtons();
-      saveGame();
-    }
-
-    function renderUpgrades() {
-      const container = document.getElementById('upgradesContainer');
-      container.innerHTML = '';
-      upgrades.forEach((upgrade, i) => {
-        const div = document.createElement('div');
-        div.className = 'upgrade';
-        const button = document.createElement('button');
-        button.textContent = 'Kaufen';
-        button.onclick = () => buyUpgrade(i);
-        button.id = `upgrade-btn-${i}`;
-        div.innerHTML = `
-          <div>${upgrade.icon}</div>
-          <strong>${upgrade.name}</strong>
-          <p>Kosten: <span id="upgrade-cost-${i}">${upgrade.cost}</span> Rita Punkte</p>
-        `;
-        div.appendChild(button);
-        container.appendChild(div);
-      });
-    }
-
-    function updateUpgradeButtons() {
-      upgrades.forEach((upgrade, i) => {
-        const btn = document.getElementById(`upgrade-btn-${i}`);
-        const costSpan = document.getElementById(`upgrade-cost-${i}`);
-        if (btn && costSpan) {
-          costSpan.textContent = upgrade.cost;
-          if (points >= upgrade.cost) {
-            btn.classList.add('enabled');
-          } else {
-            btn.classList.remove('enabled');
-          }
+        function buyUpgrade(index) {
+            const upgrade = upgrades[index];
+            if (points >= upgrade.cost) {
+                points -= upgrade.cost;
+                upgrade.effect();
+                upgrade.cost = Math.ceil(upgrade.cost * 1.75);
+                updateUI();
+                renderUpgrades();
+            }
         }
-      });
-    }
 
-    function buyUpgrade(index) {
-      const upgrade = upgrades[index];
-      if (points >= upgrade.cost) {
-        points -= upgrade.cost;
-        upgrade.effect();
-        upgrade.cost = Math.ceil(upgrade.cost * 1.75);
-        updateUI();
+        function updateUI() {
+            document.getElementById('points').textContent = points;
+            document.getElementById('perClick').textContent = perClick;
+            document.getElementById('autoPoints').textContent = autoPoints;
+            updateUpgradeButtons();
+            updateProgress();
+        }
+
+        function renderUpgrades() {
+            const container = document.getElementById('upgradesContainer');
+            container.innerHTML = '';
+            upgrades.forEach((upgrade, i) => {
+                const div = document.createElement('div');
+                div.className = 'upgrade';
+                const button = document.createElement('button');
+                button.textContent = 'Kaufen';
+                button.onclick = () => buyUpgrade(i);
+                button.id = `upgrade-btn-${i}`;
+                div.innerHTML = `
+                    <strong>${upgrade.name}</strong>
+                    <p>Kosten: <span id="upgrade-cost-${i}">${upgrade.cost}</span> Rita Punkte</p>
+                `;
+                div.appendChild(button);
+                container.appendChild(div);
+            });
+            updateUpgradeButtons();
+        }
+
+        function updateUpgradeButtons() {
+            upgrades.forEach((upgrade, i) => {
+                const btn = document.getElementById(`upgrade-btn-${i}`);
+                const costSpan = document.getElementById(`upgrade-cost-${i}`);
+                if (btn && costSpan) {
+                    costSpan.textContent = upgrade.cost;
+                    if (points >= upgrade.cost) {
+                        btn.classList.add('enabled');
+                    } else {
+                        btn.classList.remove('enabled');
+                    }
+                }
+            });
+        }
+
+        function updateProgress() {
+            const bar = document.getElementById('progressBar');
+            const info = document.getElementById('progressInfo');
+            const nextUpgrade = upgrades.find(upg => points < upg.cost);
+
+            if (!nextUpgrade) {
+                bar.style.width = '100%';
+                bar.style.background = '#00ff99';
+                info.textContent = "Alle Upgrades gekauft!";
+                return;
+            }
+
+            const remaining = nextUpgrade.cost - points;
+            const progress = Math.min(100, (points / nextUpgrade.cost) * 100);
+            bar.style.width = progress + '%';
+            bar.style.background = progress >= 100 ? '#00ff99' : '#ff6347';
+            info.textContent = `Noch ${remaining} Punkte bis \"${nextUpgrade.name}\"`;
+        }
+
+        setInterval(() => {
+            points += autoPoints;
+            updateUI();
+        }, 1000);
+
+        document.getElementById('clickCircle').addEventListener('click', () => {
+            points += perClick;
+            updateUI();
+        });
+
         renderUpgrades();
-      }
-    }
+        updateUI();
 
-    function saveGame() {
-      localStorage.setItem("rita_points", points);
-      localStorage.setItem("rita_perClick", perClick);
-      localStorage.setItem("rita_autoPoints", autoPoints);
-      localStorage.setItem("rita_upgrades", JSON.stringify(upgrades.map(u => u.cost)));
-    }
-
-    function loadGame() {
-      const savedPoints = localStorage.getItem("rita_points");
-      const savedPerClick = localStorage.getItem("rita_perClick");
-      const savedAutoPoints = localStorage.getItem("rita_autoPoints");
-      const savedCosts = JSON.parse(localStorage.getItem("rita_upgrades") || "[]");
-
-      if (savedPoints !== null) points = parseInt(savedPoints);
-      if (savedPerClick !== null) perClick = parseInt(savedPerClick);
-      if (savedAutoPoints !== null) autoPoints = parseInt(savedAutoPoints);
-
-      if (savedCosts.length === upgrades.length) {
-        upgrades.forEach((u, i) => u.cost = savedCosts[i]);
-      }
-    }
-
-    clickCircle.addEventListener("click", () => {
-      points += perClick;
-      updateUI();
-      playSound();
-    });
-
-    setInterval(() => {
-      points += autoPoints;
-      updateUI();
-    }, 1000);
-
-    loadGame();
-    renderUpgrades();
-    updateUI();
-  </script>
+        document.addEventListener("contextmenu", e => e.preventDefault());
+        document.addEventListener("keydown", e => {
+            if (
+                e.key === "F12" ||
+                (e.ctrlKey && e.shiftKey && (e.key === "I" || e.key === "J" || e.key === "C")) ||
+                (e.ctrlKey && e.key === "U")
+            ) {
+                e.preventDefault();
+                alert("Aktion nicht erlaubt.");
+            }
+        });
+    </script>
 </body>
 </html>
