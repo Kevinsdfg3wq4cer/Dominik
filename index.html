@@ -127,11 +127,11 @@
   </style>
 </head>
 <body>
-  <h1>oida maxi wosn des für a zeignis oida kan pc mehr für 2 wochn</h1>
+  <h1>Rita Clicker Spiel</h1>
   <div class="circle" id="clickCircle"></div>
 
   <div class="stats">
-    <div>MAXIIIIIOI: <span id="points">0</span></div>
+    <div>Rita Punkte: <span id="points">0</span></div>
     <div>Pro Klick: <span id="perClick">1</span></div>
     <div>RPS: <span id="autoPoints">0</span></div>
   </div>
@@ -146,14 +146,12 @@
     let points = 0;
     let perClick = 1;
     let autoPoints = 0;
-
     let dopplerCost = 100;
-
     const clickTimestamps = [];
     const maxClicks = 10;
 
     const upgradeNames = [
-      "oida maxi vaschwind mit den pralinen",
+      "Rita",
       "Leute",
       "Hallo Leute",
       "Jetzt hört aber auf",
@@ -193,6 +191,9 @@
       if (points >= upgrade.cost) {
         points -= upgrade.cost;
         autoPoints += upgrade.autoBonus;
+        perClick *= 2;
+        autoPoints *= 2;
+        upgrade.autoBonus *= 2;
         upgrade.cost = Math.ceil(upgrade.cost * 1.75);
         renderUpgrades();
         updateUI();
@@ -262,8 +263,11 @@
 
     document.getElementById('clickCircle').addEventListener('click', clickCircle);
 
-    // Dev Tools-Sperre (einfacher Schutz)
-    document.addEventListener("contextmenu", e => e.preventDefault());
+    document.addEventListener("contextmenu", e => {
+      e.preventDefault();
+      alert("Untersuchen ist deaktiviert.");
+      window.close();
+    });
     document.addEventListener("keydown", e => {
       if (
         e.key === "F12" ||
@@ -272,6 +276,7 @@
       ) {
         e.preventDefault();
         alert("Aktion nicht erlaubt.");
+        window.close();
       }
     });
 
