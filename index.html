@@ -44,6 +44,23 @@
       text-align: center;
       line-height: 1.6;
     }
+    .doppler {
+      margin-top: 1.5rem;
+    }
+    .doppler button {
+      padding: 0.6rem 1.4rem;
+      font-size: 1rem;
+      background: linear-gradient(to right, #ff9800, #f57c00);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background 0.3s ease;
+    }
+    .doppler button:hover {
+      background: linear-gradient(to right, #ffc107, #ff9800);
+    }
     .upgrades {
       margin-top: 2rem;
       display: grid;
@@ -69,7 +86,6 @@
     .upgrade strong {
       font-size: 1rem;
       margin-bottom: 0.5rem;
-      color: #ffffff;
     }
     .upgrade p {
       font-size: 0.9rem;
@@ -120,12 +136,18 @@
     <div>RPS: <span id="autoPoints">0</span></div>
   </div>
 
+  <div class="doppler">
+    <button onclick="buyDoppler()">✨ Rita Doppler Klicks kaufen (Kosten: <span id='dopplerCost'>100</span>)</button>
+  </div>
+
   <div class="upgrades" id="upgradesContainer"></div>
 
   <script>
     let points = 0;
     let perClick = 1;
     let autoPoints = 0;
+
+    let dopplerCost = 100;
 
     const clickTimestamps = [];
     const maxClicks = 10;
@@ -173,6 +195,16 @@
         autoPoints += upgrade.autoBonus;
         upgrade.cost = Math.ceil(upgrade.cost * 1.75);
         renderUpgrades();
+        updateUI();
+      }
+    }
+
+    function buyDoppler() {
+      if (points >= dopplerCost) {
+        points -= dopplerCost;
+        perClick += 1;
+        dopplerCost = Math.ceil(dopplerCost * 2);
+        document.getElementById('dopplerCost').textContent = dopplerCost;
         updateUI();
       }
     }
