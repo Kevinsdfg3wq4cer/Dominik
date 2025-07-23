@@ -5,8 +5,139 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Rita Clicker Spiel</title>
   <style>
-    /* Dein gesamtes CSS bleibt gleich (nicht verändert) */
-    /* ... (aus Platzgründen ausgelassen, siehe vorheriger Post) ... */
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #1e1e2f, #2f2f4f);
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      padding: 2rem;
+    }
+    h1 {
+      margin-bottom: 2rem;
+      font-size: 2rem;
+    }
+    .circle {
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      background: #ff6347 url('37301b00-4ec2-4c5f-b39f-1e4dce5b70e2.png') center/cover no-repeat;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 0 20px #ff6347;
+      transition: transform 0.1s ease-in-out;
+    }
+    .circle:active {
+      transform: scale(0.95);
+    }
+    .stats {
+      margin-top: 1.5rem;
+      font-size: 1.1rem;
+      text-align: center;
+      line-height: 1.6;
+    }
+    .doppler {
+      margin-top: 1.5rem;
+    }
+    .doppler button {
+      padding: 0.6rem 1.4rem;
+      font-size: 1rem;
+      background: linear-gradient(to right, #ff9800, #f57c00);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background 0.3s ease;
+    }
+    .doppler button:hover {
+      background: linear-gradient(to right, #ffc107, #ff9800);
+    }
+    .upgrades {
+      margin-top: 2rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.2rem;
+      width: 100%;
+      max-width: 900px;
+    }
+    .upgrade {
+      background: #3d3d5c;
+      padding: 1rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      transition: transform 0.2s ease, background 0.3s ease;
+    }
+    .upgrade:hover {
+      transform: scale(1.02);
+      background: #48486b;
+    }
+    .upgrade strong {
+      font-size: 1rem;
+      margin-bottom: 0.5rem;
+    }
+    .upgrade p {
+      font-size: 0.9rem;
+      margin: 0.3rem 0;
+      color: #ddd;
+    }
+    .upgrade button {
+      margin-top: 0.5rem;
+      padding: 0.5rem 1rem;
+      background: linear-gradient(to right, #28a745, #218838);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+      opacity: 0.4;
+      pointer-events: none;
+    }
+    .upgrade button.enabled {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .progress-bar {
+      width: 100%;
+      height: 8px;
+      background: #777;
+      border-radius: 5px;
+      overflow: hidden;
+      margin-top: 0.4rem;
+    }
+    .progress-bar-inner {
+      height: 100%;
+      background: #00ff88;
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    #blockScreen {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: #000;
+      color: #fff;
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      font-size: 1.5rem;
+    }
   </style>
 </head>
 <body>
@@ -25,14 +156,17 @@
 
   <div class="upgrades" id="upgradesContainer"></div>
 
+  <div id="blockScreen">
+    🔒 Untersuchen ist deaktiviert.<br>Diese Aktion ist nicht erlaubt.
+  </div>
+
   <script>
     let points = 0;
     let perClick = 1;
     let autoPoints = 0;
     let dopplerCost = 100;
     const clickTimestamps = [];
-    const maxClicks = 15;
-    let clickBlocked = false;
+    const maxClicks = 8;
 
     const upgradeNames = [
       "Rita", "Leute", "Hallo Leute", "Jetzt hört aber auf", "mir ist es egal",
@@ -46,27 +180,16 @@
     }));
 
     function clickCircle() {
-      if (clickBlocked) return;
-
       const now = Date.now();
       clickTimestamps.push(now);
       if (clickTimestamps.length > maxClicks) clickTimestamps.shift();
 
-      if (clickTimestamps.length >= maxClicks) {
-        const intervals = [];
-        for (let i = 1; i < clickTimestamps.length; i++) {
-          intervals.push(clickTimestamps[i] - clickTimestamps[i - 1]);
-        }
-        const first = intervals[0];
-        const allEqual = intervals.every(int => Math.abs(int - first) <= 5);
-        if (allEqual) {
-          alert("Autoclicker erkannt! Klicks für 10 Sekunden gesperrt.");
-          clickBlocked = true;
-          setTimeout(() => {
-            clickBlocked = false;
-          }, 10000);
-          return;
-        }
+      const timeSpan = clickTimestamps[clickTimestamps.length - 1] - clickTimestamps[0];
+      if (clickTimestamps.length === maxClicks && timeSpan < 1000) {
+        alert("Autoclicker erkannt! Punkte werden auf 0 gesetzt.");
+        points = 0;
+        updateUI();
+        return;
       }
 
       points += perClick;
@@ -77,8 +200,8 @@
       const upgrade = upgrades[i];
       if (points >= upgrade.cost) {
         points -= upgrade.cost;
-        autoPoints += upgrade.autoBonus;
         perClick *= 2;
+        autoPoints += upgrade.autoBonus;
         autoPoints *= 2;
         upgrade.autoBonus *= 2;
         upgrade.cost = Math.ceil(upgrade.cost * 1.75);
@@ -148,7 +271,27 @@
       updateUI();
     }, 1000);
 
+    function showBlockScreen() {
+      document.getElementById("blockScreen").style.display = "flex";
+    }
+
     document.getElementById('clickCircle').addEventListener('click', clickCircle);
+
+    document.addEventListener("contextmenu", e => {
+      e.preventDefault();
+      showBlockScreen();
+    });
+
+    document.addEventListener("keydown", e => {
+      if (
+        e.key === "F12" ||
+        (e.ctrlKey && e.shiftKey && ["I", "J", "C"].includes(e.key)) ||
+        (e.ctrlKey && e.key === "U")
+      ) {
+        e.preventDefault();
+        showBlockScreen();
+      }
+    });
 
     renderUpgrades();
     updateUI();
