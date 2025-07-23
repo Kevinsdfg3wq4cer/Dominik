@@ -122,15 +122,34 @@
       width: 0%;
       transition: width 0.3s ease;
     }
+  </style>
+</head>
+<body>
+  <h1>Rita Clicker Spiel</h1>
+  <div class="circle" onclick="increment()"></div>
+  <div class="stats" id="stats">Punkte: 0</div>
+  <div class="doppler">
+    <button onclick="dopplerBoost()">Doppler Boost</button>
+  </div>
+  <div class="upgrades" id="upgrades"></div>
 
-    #blockScreen {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background: #000;
-      color: #fff;
-      z-index: 9999;
-      align-items: center;
+  <script>
+    let punkte = 0;
+    let klickWert = 1;
+
+    function increment() {
+      punkte += klickWert;
+      updateStats();
+    }
+
+    function dopplerBoost() {
+      klickWert *= 2;
+      updateStats();
+    }
+
+    function updateStats() {
+      document.getElementById("stats").innerText = `Punkte: ${punkte}`;
+    }
+  </script>
+</body>
+</html>
