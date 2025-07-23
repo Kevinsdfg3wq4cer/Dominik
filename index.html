@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dominik Clicker Spiel</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #1e1e2f, #2f2f4f);
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: start;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+        h1 {
+            margin-bottom: 2rem;
+        }
+        .circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: #ff6347;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 0 20px #ff6347;
+            transition: transform 0.1s ease-in-out;
+        }
+        .circle:active {
+            transform: scale(0.95);
+        }
+        .stats {
+            margin-top: 1rem;
+            font-size: 1.2rem;
+        }
+        .upgrades {
+            margin-top: 2rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            width: 100%;
+            max-width: 1000px;
+        }
+        .upgrade {
+            background: #555;
+            padding: 1rem;
+            border-radius: 16px;
+            box-shadow: 0 0 12px rgba(255,255,255,0.2);
+            display: flex;
+            flex-direction: column;
+            align-items: start;
+            transition: transform 0.3s ease;
+        }
+        .upgrade:hover {
+            transform: scale(1.03);
+        }
+        .upgrade button {
+            margin-top: 1rem;
+            padding: 0.6rem 1.2rem;
+            background: linear-gradient(to right, #28a745, #218838);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            opacity: 0.4;
+            pointer-events: none;
+        }
+        .upgrade button.enabled {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .upgrade button:hover.enabled {
+            background: linear-gradient(to right, #2ecc71, #27ae60);
+        }
+    </style>
+</head>
+<body>
+    <h1>Dominik Clicker Spiel</h1>
+    <div class="circle" id="clickCircle">Klick!</div>
+    <div class="stats">
+        <div>Dominiks: <span id="points">0</span></div>
+        <div>Pro Klick: <span id="perClick">1</span></div>
+        <div>DPS: <span id="autoPoints">0</span></div>
+    </div>
+    <div class="upgrades" id="upgradesContainer"></div>
+    <script>
+        let points = 0;
+        let perClick = 1;
+        let autoPoints = 0;
+
+        let lastClickTime = 0;
+        const clickTimestamps = [];
+        const maxClicks = 10;
+        const clickCooldown = 100;
+
+        const upgradeNames = [
+            "Dominik",
+            "Dominik",
+            "Dominik Minecraft",
+            "Dominik Schere",
+            "Dominik Sport",
+            "Dominik Nachbarin",
+            "Dominik Mathe",
+            "Dominik Englisch",
+            "Dominik Ausraster",
+            "Dominik Finale"
+        ];
+
+        const upgrades = [];
+        for (let i = 0; i < upgradeNames.length; i++) {
+            const autoBonus = 5 * Math.pow(2, i);
+            upgrades.push({
+                name: upgradeNames[i],
+                cost: Math.ceil(50 * Math.pow(2.5, i + 1)),
+                effect: () => {
+                    autoPoints += autoBonus;
+                }
+            });
+        }
+
+        function clickCircle() {
+            const now = Date.now();
+            if (now - lastClickTime < clickCooldown) return;
+            lastClickTime = now;
+            clickTimestamps.push(now);
+            if (clickTimestamps.length > maxClicks) clickTimestamps.shift();
+
+            const timeSpan = clickTimestamps[clickTimestamps.length - 1] - clickTimestamps[0];
+            if (clickTimestamps.length === maxClicks && timeSpan < 1000) {
+                alert("Autoclicker erkannt! Punkte werden auf 0 gesetzt.");
+                points = 0;
+                updateUI();
+                return;
+            }
+
+            points += perClick;
+            updateUI();
+        }
+
+        document.getElementById("clickCircle").addEventListener("click", clickCircle);
+
+        function buyUpgrade(index) {
+            const upgrade = upgrades[index];
+            if (points >= upgrade.cost) {
+                points -= upgrade.cost;
+                upgrade.effect();
+                upgrade.cost = Math.ceil(upgrade.cost * 1.75);
+                updateUI();
+                renderUpgrades();
+            }
+        }
+
+        function updateUI() {
+            document.getElementById('points').textContent = points;
+            document.getElementById('perClick').textContent = perClick;
+            document.getElementById('autoPoints').textContent = autoPoints;
+            updateUpgradeButtons();
+        }
+
+        function renderUpgrades() {
+            const container = document.getElementById('upgradesContainer');
+            container.innerHTML = '';
+            upgrades.forEach((upgrade, i) => {
+                const div = document.createElement('div');
+                div.className = 'upgrade';
+                const button = document.createElement('button');
+                button.textContent = 'Kaufen';
+                button.onclick = () => buyUpgrade(i);
+                button.id = `upgrade-btn-${i}`;
+                div.innerHTML = `
+                    <strong>${upgrade.name}</strong>
+                    <p>Kosten: <span id="upgrade-cost-${i}">${upgrade.cost}</span> Dominiks</p>
+                `;
+                div.appendChild(button);
+                container.appendChild(div);
+            });
+            updateUpgradeButtons();
+        }
+
+        function updateUpgradeButtons() {
+            upgrades.forEach((upgrade, i) => {
+                const btn = document.getElementById(`upgrade-btn-${i}`);
+                const costSpan = document.getElementById(`upgrade-cost-${i}`);
+                if (btn && costSpan) {
+                    costSpan.textContent = upgrade.cost;
+                    if (points >= upgrade.cost) {
+                        btn.classList.add('enabled');
+                    } else {
+                        btn.classList.remove('enabled');
+                    }
+                }
+            });
+        }
+
+        setInterval(() => {
+            points += autoPoints;
+            updateUI();
+        }, 1000);
+
+        renderUpgrades();
+        updateUI();
+    </script>
+</body>
+</html>
