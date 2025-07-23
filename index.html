@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dominik Clicker Spiel</title>
+    <title>Rita Clicker Spiel</title>
     <style>
         * {
             box-sizing: border-box;
@@ -89,12 +89,12 @@
     </style>
 </head>
 <body>
-    <h1>Dominik Clicker Spiel</h1>
+    <h1>Rita Clicker Spiel</h1>
     <div class="circle" id="clickCircle">Klick!</div>
     <div class="stats">
-        <div>Dominiks: <span id="points">0</span></div>
+        <div>Rita Punkte: <span id="points">0</span></div>
         <div>Pro Klick: <span id="perClick">1</span></div>
-        <div>DPS: <span id="autoPoints">0</span></div>
+        <div>RPS: <span id="autoPoints">0</span></div>
     </div>
     <div class="upgrades" id="upgradesContainer"></div>
     <script>
@@ -108,16 +108,16 @@
         const clickCooldown = 100;
 
         const upgradeNames = [
-            "Dominik",
-            "Dominik",
-            "Dominik Minecraft",
-            "Dominik Schere",
-            "Dominik Sport",
-            "Dominik Nachbarin",
-            "Dominik Mathe",
-            "Dominik Englisch",
-            "Dominik Ausraster",
-            "Dominik Finale"
+            "Rita",
+            "Leute",
+            "Hallo Leute",
+            "Jetzt hört aber auf",
+            "mir ist es egal",
+            "abschlussfest solo",
+            "Zeichenunterricht",
+            "rita ausraster",
+            "ritalover99",
+            "was heißt auto auf englisch"
         ];
 
         const upgrades = [];
@@ -183,7 +183,7 @@
                 button.id = `upgrade-btn-${i}`;
                 div.innerHTML = `
                     <strong>${upgrade.name}</strong>
-                    <p>Kosten: <span id="upgrade-cost-${i}">${upgrade.cost}</span> Dominiks</p>
+                    <p>Kosten: <span id="upgrade-cost-${i}">${upgrade.cost}</span> Rita Punkte</p>
                 `;
                 div.appendChild(button);
                 container.appendChild(div);
