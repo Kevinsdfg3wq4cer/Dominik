@@ -124,22 +124,6 @@
       width: 0%;
       transition: width 0.3s ease;
     }
-    #blockScreen {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background: #111;
-      z-index: 9999;
-      color: white;
-      font-size: 1.5rem;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-    }
   </style>
 </head>
 <body>
@@ -157,10 +141,6 @@
   </div>
 
   <div class="upgrades" id="upgradesContainer"></div>
-
-  <div id="blockScreen">
-    <p style="margin: 0 1rem; text-align:center;">🔒 Untersuchen ist deaktiviert.<br>Diese Aktion ist nicht erlaubt.</p>
-  </div>
 
   <script>
     let points = 0;
@@ -185,14 +165,6 @@
       const now = Date.now();
       clickTimestamps.push(now);
       if (clickTimestamps.length > maxClicks) clickTimestamps.shift();
-
-      const timeSpan = clickTimestamps[clickTimestamps.length - 1] - clickTimestamps[0];
-      if (clickTimestamps.length === 12 && timeSpan < 1000) {
-        alert("Autoclicker erkannt! Punkte werden auf 0 gesetzt.");
-        points = 0;
-        updateUI();
-        return;
-      }
 
       if (clickTimestamps.length >= 15) {
         const intervals = [];
@@ -283,31 +255,12 @@
       updateUpgradeButtons();
     }
 
-    function showBlockScreen() {
-      document.getElementById("blockScreen").style.display = "flex";
-    }
-
     setInterval(() => {
       points += autoPoints;
       updateUI();
     }, 1000);
 
     document.getElementById('clickCircle').addEventListener('click', clickCircle);
-
-    document.addEventListener("contextmenu", e => {
-      e.preventDefault();
-      showBlockScreen();
-    });
-    document.addEventListener("keydown", e => {
-      if (
-        e.key === "F12" ||
-        (e.ctrlKey && e.shiftKey && ["I", "J", "C"].includes(e.key)) ||
-        (e.ctrlKey && e.key === "U")
-      ) {
-        e.preventDefault();
-        showBlockScreen();
-      }
-    });
 
     renderUpgrades();
     updateUI();
