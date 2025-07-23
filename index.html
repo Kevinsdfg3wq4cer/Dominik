@@ -2,14 +2,12 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Rita Clicker Spiel</title>
   <style>
-    * { box-sizing: border-box; }
-
     body {
       margin: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-family: Arial, sans-serif;
       background: linear-gradient(135deg, #1e1e2f, #2f2f4f);
       color: #fff;
       display: flex;
@@ -17,22 +15,19 @@
       align-items: center;
       min-height: 100vh;
       padding: 2rem;
-      user-select: none;
     }
 
     h1 {
       margin-bottom: 1rem;
-      font-size: 2rem;
     }
 
     .circle {
       width: 140px;
       height: 140px;
       border-radius: 50%;
-      background: #ff6347;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      background-image: url('37301b00-4ec2-4c5f-b39f-1e4dce5b70e2.png');
+      background-size: cover;
+      background-position: center;
       cursor: pointer;
       box-shadow: 0 0 20px #ff6347;
       transition: transform 0.1s ease-in-out;
@@ -43,34 +38,32 @@
       transform: scale(0.95);
     }
 
-    .progress-bar-container {
-      width: 300px;
-      height: 20px;
+    .progress-container {
+      width: 100%;
+      max-width: 300px;
       background: #444;
       border-radius: 10px;
       overflow: hidden;
-      margin-bottom: 1.5rem;
-      box-shadow: inset 0 0 5px rgba(0,0,0,0.5);
+      margin-top: 1rem;
     }
 
     .progress-bar {
-      height: 100%;
-      background: linear-gradient(to right, #00ff99, #00ccff);
+      height: 20px;
+      background: linear-gradient(to right, #2ecc71, #27ae60);
       width: 0%;
       transition: width 0.3s ease;
     }
 
     .stats {
-      font-size: 1.1rem;
-      text-align: center;
-      line-height: 1.6;
+      margin-top: 1rem;
+      font-size: 1.2rem;
     }
 
     .upgrades {
       margin-top: 2rem;
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 1.2rem;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
       width: 100%;
       max-width: 900px;
     }
@@ -79,7 +72,7 @@
       background: #3d3d5c;
       padding: 1rem;
       border-radius: 12px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
       display: flex;
       flex-direction: column;
       align-items: flex-start;
@@ -89,17 +82,6 @@
     .upgrade:hover {
       transform: scale(1.02);
       background: #48486b;
-    }
-
-    .upgrade strong {
-      font-size: 1rem;
-      margin-bottom: 0.5rem;
-    }
-
-    .upgrade p {
-      font-size: 0.9rem;
-      margin: 0;
-      color: #ccc;
     }
 
     .upgrade button {
@@ -129,19 +111,15 @@
 </head>
 <body>
   <h1>Rita Clicker Spiel</h1>
-
   <div class="circle" id="clickCircle"></div>
-
-  <div class="progress-bar-container">
+  <div class="progress-container">
     <div class="progress-bar" id="progressBar"></div>
   </div>
-
   <div class="stats">
     <div>Rita Punkte: <span id="points">0</span></div>
     <div>Pro Klick: <span id="perClick">1</span></div>
     <div>RPS: <span id="autoPoints">0</span></div>
   </div>
-
   <div class="upgrades" id="upgradesContainer"></div>
 
   <script>
@@ -149,46 +127,69 @@
     let perClick = 1;
     let autoPoints = 0;
 
+    const clickCircle = document.getElementById('clickCircle');
+    clickCircle.addEventListener('click', () => {
+      points += perClick;
+      updateUI();
+    });
+
     const upgradeNames = [
-      "Rita", "Leute", "Hallo Leute", "Jetzt hört aber auf", "mir ist es egal",
-      "abschlussfest solo", "Zeichenunterricht", "rita ausraster", "ritalover99", "was heißt auto auf englisch"
+      "Rita",
+      "Leute",
+      "Hallo Leute",
+      "Jetzt hört aber auf",
+      "mir ist es egal",
+      "abschlussfest solo",
+      "Zeichenunterricht",
+      "rita ausraster",
+      "ritalover99",
+      "was heißt auto auf englisch"
     ];
 
     const upgrades = upgradeNames.map((name, i) => ({
       name,
       cost: Math.ceil(50 * Math.pow(2.5, i + 1)),
-      effect: () => autoPoints += 5 * Math.pow(2, i)
+      autoBonus: 5 * Math.pow(2, i)
     }));
 
-    function updateUI() {
-      document.getElementById("points").textContent = points;
-      document.getElementById("perClick").textContent = perClick;
-      document.getElementById("autoPoints").textContent = autoPoints;
-      updateUpgradeButtons();
-      updateProgressBar();
+    function buyUpgrade(index) {
+      const upg = upgrades[index];
+      if (points >= upg.cost) {
+        points -= upg.cost;
+        autoPoints += upg.autoBonus;
+        upg.cost = Math.ceil(upg.cost * 1.75);
+        updateUI();
+        renderUpgrades();
+      }
     }
 
-    function updateProgressBar() {
-      const nextUpgrade = upgrades.find(upg => points < upg.cost);
-      const nextCost = nextUpgrade ? nextUpgrade.cost : points + 100;
-      const percent = Math.min(100, (points / nextCost) * 100);
-      document.getElementById("progressBar").style.width = percent + "%";
+    function updateUI() {
+      document.getElementById('points').textContent = points;
+      document.getElementById('perClick').textContent = perClick;
+      document.getElementById('autoPoints').textContent = autoPoints;
+
+      // Fortschrittsbalken (z.B. Ziel: 1000 Punkte)
+      const max = 1000;
+      const progress = Math.min(points / max * 100, 100);
+      document.getElementById('progressBar').style.width = progress + '%';
+
+      updateUpgradeButtons();
     }
 
     function renderUpgrades() {
-      const container = document.getElementById("upgradesContainer");
+      const container = document.getElementById('upgradesContainer');
       container.innerHTML = '';
-      upgrades.forEach((upgrade, i) => {
+      upgrades.forEach((upg, i) => {
         const div = document.createElement('div');
         div.className = 'upgrade';
+        div.innerHTML = `
+          <strong>${upg.name}</strong>
+          <p>Kosten: <span id="upgrade-cost-${i}">${upg.cost}</span> Rita Punkte</p>
+        `;
         const button = document.createElement('button');
         button.textContent = 'Kaufen';
         button.onclick = () => buyUpgrade(i);
         button.id = `upgrade-btn-${i}`;
-        div.innerHTML = `
-          <strong>${upgrade.name}</strong>
-          <p>Kosten: <span id="upgrade-cost-${i}">${upgrade.cost}</span> Rita Punkte</p>
-        `;
         div.appendChild(button);
         container.appendChild(div);
       });
@@ -196,33 +197,19 @@
     }
 
     function updateUpgradeButtons() {
-      upgrades.forEach((upgrade, i) => {
+      upgrades.forEach((upg, i) => {
         const btn = document.getElementById(`upgrade-btn-${i}`);
         const costSpan = document.getElementById(`upgrade-cost-${i}`);
         if (btn && costSpan) {
-          costSpan.textContent = upgrade.cost;
-          btn.classList.toggle('enabled', points >= upgrade.cost);
+          costSpan.textContent = upg.cost;
+          if (points >= upg.cost) {
+            btn.classList.add('enabled');
+          } else {
+            btn.classList.remove('enabled');
+          }
         }
       });
     }
-
-    function buyUpgrade(index) {
-      const upgrade = upgrades[index];
-      if (points >= upgrade.cost) {
-        points -= upgrade.cost;
-        upgrade.effect();
-        upgrade.cost = Math.ceil(upgrade.cost * 1.75);
-        updateUI();
-        renderUpgrades();
-      }
-    }
-
-    function clickCircle() {
-      points += perClick;
-      updateUI();
-    }
-
-    document.getElementById("clickCircle").addEventListener("click", clickCircle);
 
     setInterval(() => {
       points += autoPoints;
@@ -232,7 +219,7 @@
     renderUpgrades();
     updateUI();
 
-    // Rechtsklick und Dev-Tools blockieren (nicht 100% sicher)
+    // Dev-Tools blockieren (oberflächlich)
     document.addEventListener("contextmenu", e => e.preventDefault());
     document.addEventListener("keydown", e => {
       if (
@@ -241,7 +228,7 @@
         (e.ctrlKey && e.key === "U")
       ) {
         e.preventDefault();
-        alert("Untersuchen deaktiviert.");
+        alert("Untersuchen ist deaktiviert.");
       }
     });
   </script>
