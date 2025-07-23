@@ -168,7 +168,7 @@
     let autoPoints = 0;
     let dopplerCost = 100;
     const clickTimestamps = [];
-    const maxClicks = 12;
+    const maxClicks = 15;
 
     const upgradeNames = [
       "Rita", "Leute", "Hallo Leute", "Jetzt hört aber auf", "mir ist es egal",
@@ -187,20 +187,21 @@
       if (clickTimestamps.length > maxClicks) clickTimestamps.shift();
 
       const timeSpan = clickTimestamps[clickTimestamps.length - 1] - clickTimestamps[0];
-      if (clickTimestamps.length === maxClicks && timeSpan < 1000) {
+      if (clickTimestamps.length === 12 && timeSpan < 1000) {
         alert("Autoclicker erkannt! Punkte werden auf 0 gesetzt.");
         points = 0;
         updateUI();
         return;
       }
 
-      const intervalDiffs = [];
-      for (let i = 1; i < clickTimestamps.length; i++) {
-        intervalDiffs.push(clickTimestamps[i] - clickTimestamps[i - 1]);
-      }
-      if (intervalDiffs.length >= 4) {
-        const isSuspicious = intervalDiffs.every(diff => Math.abs(diff - intervalDiffs[0]) <= 5);
-        if (isSuspicious) {
+      if (clickTimestamps.length >= 15) {
+        const intervals = [];
+        for (let i = 1; i < clickTimestamps.length; i++) {
+          intervals.push(clickTimestamps[i] - clickTimestamps[i - 1]);
+        }
+        const first = intervals[0];
+        const allEqual = intervals.every(int => Math.abs(int - first) <= 5);
+        if (allEqual) {
           alert("Kein Autoclicker du Hund");
           points = 0;
           updateUI();
