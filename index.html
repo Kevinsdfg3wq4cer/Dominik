@@ -33,12 +33,9 @@
             justify-content: center;
             font-size: 24px;
             font-weight: bold;
-            cursor: pointer;
             box-shadow: 0 0 20px #ff6347;
-            transition: transform 0.1s ease-in-out;
-        }
-        .circle:active {
-            transform: scale(0.95);
+            user-select: none;
+            pointer-events: none; /* ← Klick deaktiviert */
         }
         .stats {
             margin-top: 1rem;
@@ -90,7 +87,7 @@
 </head>
 <body>
     <h1>Rita Clicker Spiel</h1>
-    <div class="circle" id="clickCircle">Klick!</div>
+    <div class="circle" id="clickCircle">Klick deaktiviert</div>
     <div class="stats">
         <div>Rita Punkte: <span id="points">0</span></div>
         <div>Pro Klick: <span id="perClick">1</span></div>
@@ -101,11 +98,6 @@
         let points = 0;
         let perClick = 1;
         let autoPoints = 0;
-
-        let lastClickTime = 0;
-        const clickTimestamps = [];
-        const maxClicks = 10;
-        const clickCooldown = 100;
 
         const upgradeNames = [
             "Rita",
@@ -131,27 +123,6 @@
                 }
             });
         }
-
-        function clickCircle() {
-            const now = Date.now();
-            if (now - lastClickTime < clickCooldown) return;
-            lastClickTime = now;
-            clickTimestamps.push(now);
-            if (clickTimestamps.length > maxClicks) clickTimestamps.shift();
-
-            const timeSpan = clickTimestamps[clickTimestamps.length - 1] - clickTimestamps[0];
-            if (clickTimestamps.length === maxClicks && timeSpan < 1000) {
-                alert("Autoclicker erkannt! Punkte werden auf 0 gesetzt.");
-                points = 0;
-                updateUI();
-                return;
-            }
-
-            points += perClick;
-            updateUI();
-        }
-
-        document.getElementById("clickCircle").addEventListener("click", clickCircle);
 
         function buyUpgrade(index) {
             const upgrade = upgrades[index];
@@ -213,6 +184,19 @@
 
         renderUpgrades();
         updateUI();
+
+        // Sicherheit: Dev Tools blockieren (nicht 100% sicher)
+        document.addEventListener("contextmenu", e => e.preventDefault());
+        document.addEventListener("keydown", e => {
+            if (
+                e.key === "F12" ||
+                (e.ctrlKey && e.shiftKey && (e.key === "I" || e.key === "J" || e.key === "C")) ||
+                (e.ctrlKey && e.key === "U")
+            ) {
+                e.preventDefault();
+                alert("Aktion nicht erlaubt.");
+            }
+        });
     </script>
 </body>
 </html>
