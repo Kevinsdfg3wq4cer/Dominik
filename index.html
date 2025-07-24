@@ -9,17 +9,17 @@
     body {
       margin: 0;
       font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(135deg, #1e1e2f, #2f2f4f);
+      background: linear-gradient(135deg, #202030, #3a3a5a);
       color: #fff;
       display: flex;
       flex-direction: column;
       align-items: center;
-      min-height: 100vh;
       padding: 2rem;
+      min-height: 100vh;
     }
     h1 {
       margin-bottom: 2rem;
-      font-size: 2rem;
+      font-size: 2.2rem;
     }
     .circle {
       width: 140px;
@@ -38,15 +38,15 @@
     }
     .stats {
       margin-top: 1.5rem;
-      font-size: 1.1rem;
+      font-size: 1.2rem;
       text-align: center;
-      line-height: 1.6;
+      line-height: 1.8;
     }
     .doppler {
       margin-top: 1.5rem;
     }
     .doppler button {
-      padding: 0.6rem 1.4rem;
+      padding: 0.7rem 1.6rem;
       font-size: 1rem;
       background: linear-gradient(to right, #ff9800, #f57c00);
       color: #fff;
@@ -62,10 +62,10 @@
     .upgrades {
       margin-top: 2rem;
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
       gap: 1.2rem;
       width: 100%;
-      max-width: 900px;
+      max-width: 1000px;
     }
     .upgrade {
       background: #3d3d5c;
@@ -74,7 +74,6 @@
       box-shadow: 0 4px 8px rgba(0,0,0,0.3);
       display: flex;
       flex-direction: column;
-      align-items: flex-start;
       transition: transform 0.2s ease, background 0.3s ease;
     }
     .upgrade:hover {
@@ -82,7 +81,7 @@
       background: #48486b;
     }
     .upgrade strong {
-      font-size: 1rem;
+      font-size: 1.1rem;
       margin-bottom: 0.5rem;
     }
     .upgrade p {
@@ -110,11 +109,11 @@
     }
     .progress-bar {
       width: 100%;
-      height: 8px;
-      background: #777;
+      height: 10px;
+      background: #666;
       border-radius: 5px;
       overflow: hidden;
-      margin-top: 0.4rem;
+      margin-top: 0.5rem;
     }
     .progress-bar-inner {
       height: 100%;
@@ -122,7 +121,6 @@
       width: 0%;
       transition: width 0.3s ease;
     }
-
     #blockScreen {
       display: none;
       position: fixed;
@@ -147,11 +145,11 @@
   <div class="stats">
     <div>Rita Punkte: <span id="points">0</span></div>
     <div>Pro Klick: <span id="perClick">1</span></div>
-    <div>RPS: <span id="autoPoints">0</span></div>
+    <div>RPS (Auto): <span id="autoPoints">0</span></div>
   </div>
 
   <div class="doppler">
-    <button onclick="buyDoppler()">✨ Rita Doppler Klicks kaufen (Kosten: <span id='dopplerCost'>100</span>)</button>
+    <button onclick="buyDoppler()">✨ Rita Doppler (Kosten: <span id='dopplerCost'>50</span>)</button>
   </div>
 
   <div class="upgrades" id="upgradesContainer"></div>
@@ -164,19 +162,19 @@
     let points = 0;
     let perClick = 1;
     let autoPoints = 0;
-    let dopplerCost = 100;
+    let dopplerCost = 50;
     const clickTimestamps = [];
-    const maxClicks = 8;
-
+    const maxClicks = 20; // bis zu 20 Klicks speichern
     const upgradeNames = [
-      "Rita", "Leute", "Hallo Leute", "Jetzt hört aber auf", "mir ist es egal",
-      "abschlussfest solo", "Zeichenunterricht", "rita ausraster", "ritalover99", "was heißt auto auf englisch"
+      "Rita", "Leute", "Hallo Leute", "Jetzt hört aber auf", "Mir ist es egal",
+      "Abschlussfest solo", "Zeichenunterricht", "Rita Ausraster", "RitaLover99", "Was heißt Auto auf Englisch?"
     ];
 
     const upgrades = upgradeNames.map((name, i) => ({
       name,
-      cost: Math.ceil(50 * Math.pow(2.5, i + 1)),
-      autoBonus: 5 * Math.pow(2, i)
+      cost: 100 + i * 150,
+      autoBonus: 5,
+      bought: 0
     }));
 
     function clickCircle() {
@@ -184,9 +182,10 @@
       clickTimestamps.push(now);
       if (clickTimestamps.length > maxClicks) clickTimestamps.shift();
 
-      const timeSpan = clickTimestamps[clickTimestamps.length - 1] - clickTimestamps[0];
-      if (clickTimestamps.length === maxClicks && timeSpan < 1000) {
-        alert("Autoclicker erkannt! Punkte werden auf 0 gesetzt.");
+      const oneSecAgo = now - 1000;
+      const clicksLastSecond = clickTimestamps.filter(t => t > oneSecAgo).length;
+      if (clicksLastSecond > 15) {
+        alert("Autoclicker erkannt! Punkte wurden auf 0 zurückgesetzt.");
         points = 0;
         updateUI();
         return;
@@ -197,14 +196,21 @@
     }
 
     function buyUpgrade(i) {
-      const upgrade = upgrades[i];
-      if (points >= upgrade.cost) {
-        points -= upgrade.cost;
-        perClick *= 2;
-        autoPoints += upgrade.autoBonus;
-        autoPoints *= 2;
-        upgrade.autoBonus *= 2;
-        upgrade.cost = Math.ceil(upgrade.cost * 1.75);
+      const up = upgrades[i];
+      if (points >= up.cost) {
+        points -= up.cost;
+
+        if (up.bought === 0) {
+          autoPoints += 5;
+          up.autoBonus = 5;
+        } else {
+          const newBonus = up.autoBonus / 2 + 5;
+          autoPoints += newBonus;
+          up.autoBonus = newBonus;
+        }
+
+        up.cost = Math.ceil(up.cost * 1.7);
+        up.bought++;
         renderUpgrades();
         updateUI();
       }
@@ -223,12 +229,13 @@
     function renderUpgrades() {
       const container = document.getElementById('upgradesContainer');
       container.innerHTML = '';
-      upgrades.forEach((upgrade, i) => {
+      upgrades.forEach((up, i) => {
         const div = document.createElement('div');
         div.className = 'upgrade';
         div.innerHTML = `
-          <strong>${upgrade.name}</strong>
-          <p>Kosten: <span id="upgrade-cost-${i}">${upgrade.cost}</span> Rita Punkte</p>
+          <strong>${up.name}</strong>
+          <p>Kosten: <span id="upgrade-cost-${i}">${up.cost}</span> Rita Punkte</p>
+          <p>Gekauft: ${up.bought}</p>
           <div class="progress-bar"><div class="progress-bar-inner" id="progress-${i}"></div></div>
         `;
         const button = document.createElement('button');
@@ -241,18 +248,18 @@
     }
 
     function updateUpgradeButtons() {
-      upgrades.forEach((upgrade, i) => {
+      upgrades.forEach((up, i) => {
         const btn = document.getElementById(`upgrade-btn-${i}`);
         const costSpan = document.getElementById(`upgrade-cost-${i}`);
         const progress = document.getElementById(`progress-${i}`);
         if (btn && costSpan && progress) {
-          costSpan.textContent = upgrade.cost;
-          if (points >= upgrade.cost) {
+          costSpan.textContent = up.cost;
+          if (points >= up.cost) {
             btn.classList.add('enabled');
-            progress.style.width = `100%`;
+            progress.style.width = '100%';
           } else {
             btn.classList.remove('enabled');
-            const pct = Math.min(100, (points / upgrade.cost) * 100);
+            const pct = Math.min(100, (points / up.cost) * 100);
             progress.style.width = `${pct}%`;
           }
         }
@@ -260,9 +267,9 @@
     }
 
     function updateUI() {
-      document.getElementById('points').textContent = points;
+      document.getElementById('points').textContent = Math.floor(points);
       document.getElementById('perClick').textContent = perClick;
-      document.getElementById('autoPoints').textContent = autoPoints;
+      document.getElementById('autoPoints').textContent = autoPoints.toFixed(1);
       updateUpgradeButtons();
     }
 
