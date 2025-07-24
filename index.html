@@ -5,7 +5,122 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Rita Clicker Spiel mit Levels</title>
   <style>
-    /* (Dein bisheriges CSS bleibt bestehen, ggf. eingekürzt für Lesbarkeit) */
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #202030, #3a3a5a);
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem;
+      min-height: 100vh;
+    }
+    h1 {
+      margin-bottom: 2rem;
+      font-size: 2.2rem;
+    }
+    .circle {
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      background: #ff6347 url('37301b00-4ec2-4c5f-b39f-1e4dce5b70e2.png') center/cover no-repeat;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 0 20px #ff6347;
+      transition: transform 0.1s ease-in-out;
+    }
+    .circle:active {
+      transform: scale(0.95);
+    }
+    .stats {
+      margin-top: 1.5rem;
+      font-size: 1.2rem;
+      text-align: center;
+      line-height: 1.8;
+    }
+    .doppler {
+      margin-top: 1.5rem;
+    }
+    .doppler button {
+      padding: 0.7rem 1.6rem;
+      font-size: 1rem;
+      background: linear-gradient(to right, #ff9800, #f57c00);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background 0.3s ease;
+    }
+    .doppler button:hover {
+      background: linear-gradient(to right, #ffc107, #ff9800);
+    }
+    .upgrades {
+      margin-top: 2rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.2rem;
+      width: 100%;
+      max-width: 1000px;
+    }
+    .upgrade {
+      background: #3d3d5c;
+      padding: 1rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.2s ease, background 0.3s ease;
+    }
+    .upgrade:hover {
+      transform: scale(1.02);
+      background: #48486b;
+    }
+    .upgrade strong {
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
+    }
+    .upgrade p {
+      font-size: 0.9rem;
+      margin: 0.3rem 0;
+      color: #ddd;
+    }
+    .upgrade button {
+      margin-top: 0.5rem;
+      padding: 0.5rem 1rem;
+      background: linear-gradient(to right, #28a745, #218838);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+      opacity: 0.4;
+      pointer-events: none;
+    }
+    .upgrade button.enabled {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .progress-bar {
+      width: 100%;
+      height: 10px;
+      background: #666;
+      border-radius: 5px;
+      overflow: hidden;
+      margin-top: 0.5rem;
+    }
+    .progress-bar-inner {
+      height: 100%;
+      background: #00ff88;
+      width: 0%;
+      transition: width 0.3s ease;
+    }
   </style>
 </head>
 <body>
@@ -32,7 +147,7 @@
     let autoPoints = 0;
     let dopplerCost = 50;
     let level = 1;
-    let timeLeft = 600; // 10 Minuten
+    let timeLeft = 600;
     let bossHealth = 7500;
 
     const upgradeNames = [
@@ -77,14 +192,6 @@
       }
     }
 
-    function updateUI() {
-      document.getElementById("points").textContent = Math.floor(points);
-      document.getElementById("perClick").textContent = perClick;
-      document.getElementById("autoPoints").textContent = autoPoints.toFixed(1);
-      document.getElementById("level").textContent = level;
-      document.getElementById("time").textContent = timeLeft;
-    }
-
     function renderUpgrades() {
       const container = document.getElementById("upgradesContainer");
       container.innerHTML = '';
@@ -93,12 +200,45 @@
         div.className = "upgrade";
         div.innerHTML = `
           <strong>${up.name}</strong>
-          <p>Kosten: ${up.cost} Rita Punkte</p>
+          <p>Kosten: <span id="upgrade-cost-${i}">${up.cost}</span> Rita Punkte</p>
           <p>Gekauft: ${up.bought}</p>
-          <button onclick="buyUpgrade(${i})">Kaufen</button>
+          <div class="progress-bar"><div class="progress-bar-inner" id="progress-${i}"></div></div>
         `;
+        const button = document.createElement('button');
+        button.textContent = 'Kaufen';
+        button.onclick = () => buyUpgrade(i);
+        button.id = `upgrade-btn-${i}`;
+        div.appendChild(button);
         container.appendChild(div);
       });
+    }
+
+    function updateUpgradeButtons() {
+      upgrades.forEach((up, i) => {
+        const btn = document.getElementById(`upgrade-btn-${i}`);
+        const costSpan = document.getElementById(`upgrade-cost-${i}`);
+        const progress = document.getElementById(`progress-${i}`);
+        if (btn && costSpan && progress) {
+          costSpan.textContent = up.cost;
+          if (points >= up.cost) {
+            btn.classList.add('enabled');
+            progress.style.width = '100%';
+          } else {
+            btn.classList.remove('enabled');
+            const pct = Math.min(100, (points / up.cost) * 100);
+            progress.style.width = `${pct}%`;
+          }
+        }
+      });
+    }
+
+    function updateUI() {
+      document.getElementById("points").textContent = Math.floor(points);
+      document.getElementById("perClick").textContent = perClick;
+      document.getElementById("autoPoints").textContent = autoPoints.toFixed(1);
+      document.getElementById("level").textContent = level;
+      document.getElementById("time").textContent = timeLeft;
+      updateUpgradeButtons();
     }
 
     function nextLevel() {
