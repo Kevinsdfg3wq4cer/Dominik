@@ -23,6 +23,12 @@
       font-size: 2.5rem;
       margin-bottom: 2rem;
       color: #00e6e6;
+      animation: glow 2s ease-in-out infinite alternate;
+    }
+
+    @keyframes glow {
+      from { text-shadow: 0 0 10px #00e6e6; }
+      to { text-shadow: 0 0 25px #00ffff; }
     }
 
     .circle {
@@ -37,6 +43,13 @@
       cursor: pointer;
       transition: transform 0.2s ease;
       margin-bottom: 2rem;
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
     }
 
     .circle:hover {
@@ -92,6 +105,12 @@
       width: 220px;
       text-align: center;
       transition: background 0.3s ease;
+      animation: fadeIn 0.5s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     .upgrade:hover {
@@ -102,6 +121,7 @@
       margin-top: 1.5rem;
       font-size: 1.8rem;
       font-weight: bold;
+      animation: glow 1.5s infinite alternate;
     }
   </style>
 </head>
@@ -124,6 +144,9 @@
   </div>
   <div class="upgrades" id="upgradesContainer"></div>
   <div id="statusMessage"></div>
+  <div>
+    <button id="restartButton" onclick="restartGame()" style="display:none; margin-top: 1rem;">🔁 Neustarten</button>
+  </div>
   <script>
     let points = 0;
     let perClick = 1;
@@ -136,7 +159,7 @@
 
     const upgradeNames = ["Rita", "Leute", "Hallo Leute", "Jetzt hört aber auf", "Mir ist es egal", "Abschlussfest solo", "Zeichenunterricht", "Rita Ausraster", "RitaLover99", "Was heißt Auto auf Englisch?"];
     const upgradePrices = [100, 250, 2500, 5000, 8000, 15000, 25000, 40000, 75000, 100000];
-    const upgradeBonuses = [5, 5, 15, 30, 60, 120, 250, 500, 800, 1500];
+    const upgradeBonuses = [5, 10, 15, 30, 60, 120, 250, 500, 800, 1500];
 
     const upgrades = upgradeNames.map((name, i) => ({ name, cost: upgradePrices[i], autoBonus: upgradeBonuses[i], bought: 0 }));
 
@@ -201,26 +224,44 @@
     function nextLevel() {
       const status = document.getElementById("statusMessage");
       if (points >= bossHealth) {
+        if (level >= maxLevel) {
+          status.textContent = "🎉 Du hast das Spiel gewonnen!";
+          document.getElementById("restartButton").style.display = "inline-block";
+          return;
+        }
         status.textContent = "Victory!";
         setTimeout(() => {
-          if (level >= maxLevel) {
-            alert("Du hast das Spiel gewonnen! 🎉");
-            location.reload();
-            return;
-          }
           level++;
           timeLeft = 600;
-          bossHealth = Math.ceil(bossHealth * 1.2);
+          bossHealth = Math.ceil(bossHealth * 1.15);
           status.textContent = "";
           updateUI();
         }, 1500);
       } else {
         status.textContent = "Lose!";
         setTimeout(() => {
-          alert("Du hast nicht genug Punkte! Spiel vorbei.");
-          location.reload();
+          status.textContent = "";
         }, 1500);
       }
+    }
+
+    function restartGame() {
+      points = 0;
+      perClick = 1;
+      autoPoints = 0;
+      dopplerCost = 50;
+      level = 1;
+      timeLeft = 600;
+      bossHealth = 7500;
+      upgrades.forEach((up, i) => {
+        up.cost = upgradePrices[i];
+        up.autoBonus = upgradeBonuses[i];
+        up.bought = 0;
+      });
+      document.getElementById("restartButton").style.display = "none";
+      document.getElementById("statusMessage").textContent = "";
+      renderUpgrades();
+      updateUI();
     }
 
     setInterval(() => {
