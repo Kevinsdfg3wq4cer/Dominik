@@ -235,16 +235,16 @@
       upgrades.forEach((up, i) => {
         const div = document.createElement('div');
         div.className = 'upgrade';
-        div.innerHTML = 
+        div.innerHTML = `
           <strong>${up.name}</strong>
           <p>Kosten: <span id="upgrade-cost-${i}">${up.cost}</span> Rita Punkte</p>
           <p>Gekauft: ${up.bought}</p>
           <div class="progress-bar"><div class="progress-bar-inner" id="progress-${i}"></div></div>
-        ;
+        `;
         const button = document.createElement('button');
         button.textContent = 'Kaufen';
         button.onclick = () => buyUpgrade(i);
-        button.id = upgrade-btn-${i};
+        button.id = `upgrade-btn-${i}`;
         div.appendChild(button);
         container.appendChild(div);
       });
@@ -252,9 +252,9 @@
 
     function updateUpgradeButtons() {
       upgrades.forEach((up, i) => {
-        const btn = document.getElementById(upgrade-btn-${i});
-        const costSpan = document.getElementById(upgrade-cost-${i});
-        const progress = document.getElementById(progress-${i});
+        const btn = document.getElementById(`upgrade-btn-${i}`);
+        const costSpan = document.getElementById(`upgrade-cost-${i}`);
+        const progress = document.getElementById(`progress-${i}`);
         if (btn && costSpan && progress) {
           costSpan.textContent = up.cost;
           if (points >= up.cost) {
@@ -263,7 +263,7 @@
           } else {
             btn.classList.remove('enabled');
             const pct = Math.min(100, (points / up.cost) * 100);
-            progress.style.width = ${pct}%;
+            progress.style.width = `${pct}%`;
           }
         }
       });
