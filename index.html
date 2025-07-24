@@ -147,6 +147,8 @@
   <div>
     <button id="restartButton" onclick="restartGame()" style="display:none; margin-top: 1rem;">🔁 Neustarten</button>
   </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <script>
     let points = 0;
     let perClick = 1;
@@ -157,13 +159,18 @@
     let bossHealth = 7500;
     const maxLevel = 15;
 
+    const clickSound = new Audio('https://cdn.pixabay.com/download/audio/2022/03/15/audio_34da4c0193.mp3');
+    const upgradeSound = new Audio('https://cdn.pixabay.com/download/audio/2021/09/30/audio_2f9c5bdf18.mp3');
+    const victorySound = new Audio('https://cdn.pixabay.com/download/audio/2022/03/15/audio_9eb36e57cb.mp3');
+    const loseSound = new Audio('https://cdn.pixabay.com/download/audio/2022/03/16/audio_3f4c44ad0e.mp3');
+
     const upgradeNames = ["Rita", "Leute", "Hallo Leute", "Jetzt hört aber auf", "Mir ist es egal", "Abschlussfest solo", "Zeichenunterricht", "Rita Ausraster", "RitaLover99", "Was heißt Auto auf Englisch?"];
     const upgradePrices = [100, 250, 2500, 5000, 8000, 15000, 25000, 40000, 75000, 100000];
     const upgradeBonuses = [5, 10, 15, 30, 60, 120, 250, 500, 800, 1500];
-
     const upgrades = upgradeNames.map((name, i) => ({ name, cost: upgradePrices[i], autoBonus: upgradeBonuses[i], bought: 0 }));
 
     function clickCircle() {
+      clickSound.play();
       points += perClick;
       updateUI();
     }
@@ -173,6 +180,7 @@
         points -= dopplerCost;
         perClick++;
         dopplerCost = Math.ceil(dopplerCost * 2);
+        upgradeSound.play();
         updateUI();
       }
     }
@@ -186,6 +194,7 @@
         up.autoBonus = bonus;
         up.bought++;
         up.cost = Math.ceil(up.cost * 2.2);
+        upgradeSound.play();
         renderUpgrades();
         updateUI();
       }
@@ -226,10 +235,13 @@
       if (points >= bossHealth) {
         if (level >= maxLevel) {
           status.textContent = "🎉 Du hast das Spiel gewonnen!";
+          confetti();
+          victorySound.play();
           document.getElementById("restartButton").style.display = "inline-block";
           return;
         }
         status.textContent = "Victory!";
+        victorySound.play();
         setTimeout(() => {
           level++;
           timeLeft = 600;
@@ -239,6 +251,7 @@
         }, 1500);
       } else {
         status.textContent = "Lose!";
+        loseSound.play();
         setTimeout(() => {
           status.textContent = "";
         }, 1500);
@@ -264,11 +277,29 @@
       updateUI();
     }
 
+    function saveGame() {
+      const saveData = {
+        points, perClick, autoPoints, dopplerCost, level, timeLeft, bossHealth, upgrades
+      };
+      localStorage.setItem("ritaClickerSave", JSON.stringify(saveData));
+    }
+
+    function loadGame() {
+      const data = localStorage.getItem("ritaClickerSave");
+      if (data) {
+        const save = JSON.parse(data);
+        Object.assign(window, save);
+        renderUpgrades();
+        updateUI();
+      }
+    }
+
     setInterval(() => {
       points += autoPoints;
       timeLeft--;
       if (timeLeft <= 0) nextLevel();
       updateUI();
+      saveGame();
     }, 1000);
 
     document.addEventListener("keydown", function(e) {
@@ -295,6 +326,7 @@
     }
 
     renderUpgrades();
+    loadGame();
     updateUI();
   </script>
 </body>
