@@ -25,7 +25,7 @@
       width: 140px;
       height: 140px;
       border-radius: 50%;
-      background: #ff6347;
+      background: #ff6347 url('37301b00-4ec2-4c5f-b39f-1e4dce5b70e2.png') center/cover no-repeat;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -116,4 +116,61 @@
       margin-top: 0.5rem;
     }
     .progress-bar-inner {
-      h
+      height: 100%;
+      background: #00ff88;
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+    #blockScreen {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: #000;
+      color: #fff;
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      font-size: 1.5rem;
+    }
+  </style>
+</head>
+<body>
+  <h1>Rita Clicker Spiel</h1>
+  <div class="circle" id="clickCircle"></div>
+
+  <div class="stats">
+    <div>Rita Punkte: <span id="points">0</span></div>
+    <div>Pro Klick: <span id="perClick">1</span></div>
+    <div>RPS (Auto): <span id="autoPoints">0</span></div>
+  </div>
+
+  <div class="doppler">
+    <button onclick="buyDoppler()">✨ Rita Doppler (Kosten: <span id='dopplerCost'>50</span>)</button>
+  </div>
+
+  <div class="upgrades" id="upgradesContainer"></div>
+
+  <div id="blockScreen">
+    🔒 Untersuchen ist deaktiviert.<br>Diese Aktion ist nicht erlaubt.
+  </div>
+
+  <script>
+    let points = 0;
+    let perClick = 1;
+    let autoPoints = 0;
+    let dopplerCost = 50;
+    const clickTimestamps = [];
+    const maxClicks = 30;
+
+    const upgradeNames = [
+      "Rita", "Leute", "Hallo Leute", "Jetzt hört aber auf", "Mir ist es egal",
+      "Abschlussfest solo", "Zeichenunterricht", "Rita Ausraster", "RitaLover99", "Was heißt Auto auf Englisch?"
+    ];
+
+    const upgradePrices = [100, 250, 2500, 15000, 50000, 150000, 500000, 1500000, 5000000, 15000000];
+
+    const upgrades = upgrade
