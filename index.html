@@ -3,14 +3,85 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Rita Clicker Spiel mit Levels</title>
+  <title>Rita Clicker</title>
   <style>
-    /* ... CSS bleibt gleich ... */
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #202030, #3a3a5a);
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem;
+      min-height: 100vh;
+    }
+    h1 {
+      margin-bottom: 1rem;
+    }
+    .circle {
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      background: #ff6347;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 0 20px #ff6347;
+      margin-bottom: 1rem;
+    }
+    .stats, .level-info {
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+    .upgrades {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      justify-content: center;
+    }
+    .upgrade {
+      background: #3d3d5c;
+      padding: 1rem;
+      border-radius: 8px;
+      width: 200px;
+      text-align: center;
+    }
+    button {
+      padding: 0.5rem 1rem;
+      background: #28a745;
+      border: none;
+      color: white;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    #statusMessage {
+      margin-top: 1rem;
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
   </style>
 </head>
-<body>
-  <!-- ... HTML bleibt gleich ... -->
-
+<body oncontextmenu="return false">
+  <h1>Rita Clicker Spiel</h1>
+  <div class="circle" onclick="clickCircle()"></div>
+  <div class="stats">
+    <div>Punkte: <span id="points">0</span></div>
+    <div>Pro Klick: <span id="perClick">1</span></div>
+    <div>RPS (Auto): <span id="autoPoints">0</span></div>
+  </div>
+  <div class="level-info">
+    <div>Level: <span id="level">1</span></div>
+    <div>Zeit übrig: <span id="timeLeft">600</span> Sekunden</div>
+    <div>Boss-Leben: <span id="bossHealth">7500</span></div>
+    <button onclick="nextLevel()">Level beenden (benötigt <span id="neededPoints">7500</span> Punkte)</button>
+  </div>
+  <div>
+    <button onclick="buyDoppler()">Doppler kaufen (<span id="dopplerCost">50</span>)</button>
+  </div>
+  <div class="upgrades" id="upgradesContainer"></div>
+  <div id="statusMessage"></div>
   <script>
     let points = 0;
     let perClick = 1;
@@ -26,7 +97,7 @@
     ];
 
     const upgradePrices = [100, 250, 2500, 5000, 8000, 15000, 25000, 40000, 75000, 100000];
-    const upgradeBonuses = [5, 5, 15, 30, 60, 120, 250, 500, 800, 1500];
+    const upgradeBonuses = [5, 10, 15, 30, 60, 120, 250, 500, 800, 1500];
 
     const upgrades = upgradeNames.map((name, i) => ({
       name,
@@ -38,6 +109,15 @@
     function clickCircle() {
       points += perClick;
       updateUI();
+    }
+
+    function buyDoppler() {
+      if (points >= dopplerCost) {
+        points -= dopplerCost;
+        perClick++;
+        dopplerCost = Math.ceil(dopplerCost * 2);
+        updateUI();
+      }
     }
 
     function buyUpgrade(i) {
@@ -54,7 +134,77 @@
       }
     }
 
-    // ... Der restliche JS-Code bleibt gleich ...
+    function renderUpgrades() {
+      const container = document.getElementById("upgradesContainer");
+      container.innerHTML = "";
+      upgrades.forEach((up, i) => {
+        const div = document.createElement("div");
+        div.className = "upgrade";
+        div.innerHTML = `
+          <strong>${up.name}</strong>
+          <p>Kosten: ${up.cost}</p>
+          <p>Gekauft: ${up.bought}</p>
+          <button onclick="buyUpgrade(${i})">Kaufen</button>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function updateUI() {
+      document.getElementById("points").textContent = Math.floor(points);
+      document.getElementById("perClick").textContent = perClick;
+      document.getElementById("autoPoints").textContent = autoPoints.toFixed(1);
+      document.getElementById("dopplerCost").textContent = dopplerCost;
+      document.getElementById("level").textContent = level;
+      document.getElementById("timeLeft").textContent = timeLeft;
+      document.getElementById("bossHealth").textContent = bossHealth;
+      document.getElementById("neededPoints").textContent = bossHealth;
+    }
+
+    function nextLevel() {
+      const status = document.getElementById("statusMessage");
+      if (points >= bossHealth) {
+        status.textContent = "Victory!";
+        setTimeout(() => {
+          level++;
+          timeLeft = 600;
+          bossHealth = Math.ceil(bossHealth * 1.6);
+          status.textContent = "";
+          updateUI();
+        }, 1500);
+      } else {
+        status.textContent = "Lose!";
+        setTimeout(() => {
+          alert("Du hast nicht genug Punkte! Spiel vorbei.");
+          location.reload();
+        }, 1500);
+      }
+    }
+
+    setInterval(() => {
+      points += autoPoints;
+      timeLeft--;
+      if (timeLeft <= 0) nextLevel();
+      updateUI();
+    }, 1000);
+
+    document.addEventListener("keydown", function(e) {
+      if (
+        e.key === "F12" ||
+        (e.ctrlKey && e.shiftKey && ["I", "J", "C"].includes(e.key.toUpperCase())) ||
+        (e.ctrlKey && e.key.toLowerCase() === "u")
+      ) {
+        e.preventDefault();
+        alert("Untersuchen ist deaktiviert.");
+      }
+    });
+
+    document.addEventListener("contextmenu", function(e) {
+      e.preventDefault();
+    });
+
+    renderUpgrades();
+    updateUI();
   </script>
 </body>
 </html>
