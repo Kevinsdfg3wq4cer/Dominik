@@ -2,297 +2,307 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Rita Clicker Spiel</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap');
-
+    * { box-sizing: border-box; }
     body {
       margin: 0;
-      font-family: 'Orbitron', sans-serif;
-      background: linear-gradient(to right, #141e30, #243b55);
-      color: #f0f0f0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #202030, #3a3a5a);
+      color: #fff;
       display: flex;
       flex-direction: column;
       align-items: center;
       padding: 2rem;
       min-height: 100vh;
     }
-
     h1 {
-      font-size: 2.5rem;
       margin-bottom: 2rem;
-      color: #00e6e6;
-      animation: glow 2s ease-in-out infinite alternate;
+      font-size: 2.2rem;
     }
-
-    @keyframes glow {
-      from { text-shadow: 0 0 10px #00e6e6; }
-      to { text-shadow: 0 0 25px #00ffff; }
-    }
-
     .circle {
-      width: 160px;
-      height: 160px;
+      width: 140px;
+      height: 140px;
       border-radius: 50%;
-      background: radial-gradient(circle at center, #ff3cac, #784ba0);
+      background: #ff6347 url('37301b00-4ec2-4c5f-b39f-1e4dce5b70e2.png') center/cover no-repeat;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 0 25px #ff3cac;
       cursor: pointer;
-      transition: transform 0.2s ease;
-      margin-bottom: 2rem;
-      animation: pulse 1.5s infinite;
+      box-shadow: 0 0 20px #ff6347;
+      transition: transform 0.1s ease-in-out;
     }
-
-    @keyframes pulse {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.05); }
-      100% { transform: scale(1); }
+    .circle:active {
+      transform: scale(0.95);
     }
-
-    .circle:hover {
-      transform: scale(1.1);
-    }
-
-    .stats, .level-info {
-      text-align: center;
-      margin-bottom: 1.5rem;
-    }
-
-    .level-info div, .stats div {
-      margin: 0.3rem 0;
-      font-size: 1.2rem;
-    }
-
-    button {
-      background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
-      border: none;
-      color: #fff;
-      padding: 0.7rem 1.2rem;
-      border-radius: 12px;
-      font-size: 1rem;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      box-shadow: 0 0 10px #00e6e6;
-    }
-
-    button:hover:not(:disabled) {
-      transform: scale(1.05);
-      box-shadow: 0 0 15px #00ffff;
-    }
-
-    button:disabled {
-      opacity: 0.3;
-      box-shadow: none;
-      cursor: not-allowed;
-    }
-
-    .upgrades {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 1rem;
-      justify-content: center;
-      margin-top: 1rem;
-    }
-
-    .upgrade {
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      padding: 1rem;
-      border-radius: 10px;
-      width: 220px;
-      text-align: center;
-      transition: background 0.3s ease;
-      animation: fadeIn 0.5s ease;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .upgrade:hover {
-      background: rgba(255, 255, 255, 0.1);
-    }
-
-    #statusMessage {
+    .stats {
       margin-top: 1.5rem;
-      font-size: 1.8rem;
+      font-size: 1.2rem;
+      text-align: center;
+      line-height: 1.8;
+    }
+    .doppler {
+      margin-top: 1.5rem;
+    }
+    .doppler button {
+      padding: 0.7rem 1.6rem;
+      font-size: 1rem;
+      background: linear-gradient(to right, #ff9800, #f57c00);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
       font-weight: bold;
-      animation: glow 1.5s infinite alternate;
+      transition: background 0.3s ease;
+    }
+    .doppler button:hover {
+      background: linear-gradient(to right, #ffc107, #ff9800);
+    }
+    .upgrades {
+      margin-top: 2rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.2rem;
+      width: 100%;
+      max-width: 1000px;
+    }
+    .upgrade {
+      background: #3d3d5c;
+      padding: 1rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.2s ease, background 0.3s ease;
+    }
+    .upgrade:hover {
+      transform: scale(1.02);
+      background: #48486b;
+    }
+    .upgrade strong {
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
+    }
+    .upgrade p {
+      font-size: 0.9rem;
+      margin: 0.3rem 0;
+      color: #ddd;
+    }
+    .upgrade button {
+      margin-top: 0.5rem;
+      padding: 0.5rem 1rem;
+      background: linear-gradient(to right, #28a745, #218838);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+      opacity: 0.4;
+      pointer-events: none;
+    }
+    .upgrade button.enabled {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .progress-bar {
+      width: 100%;
+      height: 10px;
+      background: #666;
+      border-radius: 5px;
+      overflow: hidden;
+      margin-top: 0.5rem;
+    }
+    .progress-bar-inner {
+      height: 100%;
+      background: #00ff88;
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+    #blockScreen {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: #000;
+      color: #fff;
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      font-size: 1.5rem;
     }
   </style>
 </head>
-<body oncontextmenu="return false" onclick="handleBodyClick(event)">
-  <h1>Rita Clicker</h1>
-  <div class="circle" onclick="clickCircle()"></div>
+<body>
+  <h1>Rita Clicker Spiel</h1>
+  <div class="circle" id="clickCircle"></div>
+
   <div class="stats">
-    <div>Punkte: <span id="points">0</span></div>
+    <div>Rita Punkte: <span id="points">0</span></div>
     <div>Pro Klick: <span id="perClick">1</span></div>
     <div>RPS (Auto): <span id="autoPoints">0</span></div>
   </div>
-  <div class="level-info">
-    <div>Level: <span id="level">1</span></div>
-    <div>Zeit übrig: <span id="timeLeft">600</span> Sekunden</div>
-    <div>Boss-Leben: <span id="bossHealth">7500</span></div>
-    <button id="levelButton" onclick="nextLevel()">Level beenden (benötigt <span id="neededPoints">7500</span>)</button>
+
+  <div class="doppler">
+    <button onclick="buyDoppler()">✨ Rita Doppler (Kosten: <span id='dopplerCost'>50</span>)</button>
   </div>
-  <div>
-    <button onclick="buyDoppler()">Doppler kaufen (<span id="dopplerCost">50</span>)</button>
-  </div>
+
   <div class="upgrades" id="upgradesContainer"></div>
-  <div id="statusMessage"></div>
-  <div>
-    <button id="restartButton" onclick="restartGame()" style="display:none; margin-top: 1rem;">🔁 Neustarten</button>
+
+  <div id="blockScreen">
+    🔒 Untersuchen ist deaktiviert.<br>Diese Aktion ist nicht erlaubt.
   </div>
+
   <script>
     let points = 0;
     let perClick = 1;
     let autoPoints = 0;
     let dopplerCost = 50;
-    let level = 1;
-    let timeLeft = 600;
-    let bossHealth = 7500;
-    const maxLevel = 15;
+    const clickTimestamps = [];
+    const maxClicks = 30;
 
-    const upgradeNames = ["Rita", "Leute", "Hallo Leute", "Jetzt hört aber auf", "Mir ist es egal", "Abschlussfest solo", "Zeichenunterricht", "Rita Ausraster", "RitaLover99", "Was heißt Auto auf Englisch?"];
+    const upgradeNames = [
+      "Rita", "Leute", "Hallo Leute", "Jetzt hört aber auf", "Mir ist es egal",
+      "Abschlussfest solo", "Zeichenunterricht", "Rita Ausraster", "RitaLover99", "Was heißt Auto auf Englisch?"
+    ];
+
+    // Neue günstigere Preise ab Upgrade 4
     const upgradePrices = [100, 250, 2500, 5000, 8000, 15000, 25000, 40000, 75000, 100000];
-    const upgradeBonuses = [5, 10, 15, 30, 60, 120, 250, 500, 800, 1500];
 
-    const upgrades = upgradeNames.map((name, i) => ({ name, cost: upgradePrices[i], autoBonus: upgradeBonuses[i], bought: 0 }));
+    const upgrades = upgradeNames.map((name, i) => ({
+      name,
+      cost: upgradePrices[i],
+      autoBonus: 5,
+      bought: 0
+    }));
 
     function clickCircle() {
+      const now = Date.now();
+      clickTimestamps.push(now);
+      if (clickTimestamps.length > maxClicks) clickTimestamps.shift();
+
+      const oneSecAgo = now - 1000;
+      const clicksLastSecond = clickTimestamps.filter(t => t > oneSecAgo).length;
+      if (clicksLastSecond > 15) {
+        alert("Autoclicker erkannt! Punkte wurden auf 0 zurückgesetzt.");
+        points = 0;
+        updateUI();
+        return;
+      }
+
       points += perClick;
       updateUI();
-    }
-
-    function buyDoppler() {
-      if (points >= dopplerCost) {
-        points -= dopplerCost;
-        perClick++;
-        dopplerCost = Math.ceil(dopplerCost * 2);
-        updateUI();
-      }
     }
 
     function buyUpgrade(i) {
       const up = upgrades[i];
       if (points >= up.cost) {
         points -= up.cost;
-        const bonus = up.bought === 0 ? up.autoBonus : up.autoBonus / 2 + 5;
-        autoPoints += bonus;
-        up.autoBonus = bonus;
-        up.bought++;
+
+        if (up.bought === 0) {
+          autoPoints += 5;
+          up.autoBonus = 5;
+        } else {
+          const newBonus = up.autoBonus / 2 + 5;
+          autoPoints += newBonus;
+          up.autoBonus = newBonus;
+        }
+
         up.cost = Math.ceil(up.cost * 2.2);
+        up.bought++;
         renderUpgrades();
         updateUI();
       }
     }
 
+    function buyDoppler() {
+      if (points >= dopplerCost) {
+        points -= dopplerCost;
+        perClick += 1;
+        dopplerCost = Math.ceil(dopplerCost * 2);
+        document.getElementById('dopplerCost').textContent = dopplerCost;
+        updateUI();
+      }
+    }
+
     function renderUpgrades() {
-      const container = document.getElementById("upgradesContainer");
-      container.innerHTML = "";
+      const container = document.getElementById('upgradesContainer');
+      container.innerHTML = '';
       upgrades.forEach((up, i) => {
-        const div = document.createElement("div");
-        div.className = "upgrade";
-        const btnDisabled = points < up.cost ? 'disabled' : '';
+        const div = document.createElement('div');
+        div.className = 'upgrade';
         div.innerHTML = `
           <strong>${up.name}</strong>
-          <p>Kosten: ${up.cost}</p>
+          <p>Kosten: <span id="upgrade-cost-${i}">${up.cost}</span> Rita Punkte</p>
           <p>Gekauft: ${up.bought}</p>
-          <button onclick="buyUpgrade(${i})" ${btnDisabled}>Kaufen</button>
+          <div class="progress-bar"><div class="progress-bar-inner" id="progress-${i}"></div></div>
         `;
+        const button = document.createElement('button');
+        button.textContent = 'Kaufen';
+        button.onclick = () => buyUpgrade(i);
+        button.id = `upgrade-btn-${i}`;
+        div.appendChild(button);
         container.appendChild(div);
       });
     }
 
-    function updateUI() {
-      document.getElementById("points").textContent = Math.floor(points);
-      document.getElementById("perClick").textContent = perClick;
-      document.getElementById("autoPoints").textContent = autoPoints.toFixed(1);
-      document.getElementById("dopplerCost").textContent = dopplerCost;
-      document.getElementById("level").textContent = level;
-      document.getElementById("timeLeft").textContent = timeLeft;
-      document.getElementById("bossHealth").textContent = bossHealth;
-      document.getElementById("neededPoints").textContent = bossHealth;
-      document.getElementById("levelButton").disabled = points < bossHealth;
-      renderUpgrades();
-    }
-
-    function nextLevel() {
-      const status = document.getElementById("statusMessage");
-      if (points >= bossHealth) {
-        if (level >= maxLevel) {
-          status.textContent = "🎉 Du hast das Spiel gewonnen!";
-          document.getElementById("restartButton").style.display = "inline-block";
-          return;
-        }
-        status.textContent = "Victory!";
-        setTimeout(() => {
-          level++;
-          timeLeft = 600;
-          bossHealth = Math.ceil(bossHealth * 1.15);
-          status.textContent = "";
-          updateUI();
-        }, 1500);
-      } else {
-        status.textContent = "Lose!";
-        setTimeout(() => {
-          status.textContent = "";
-        }, 1500);
-      }
-    }
-
-    function restartGame() {
-      points = 0;
-      perClick = 1;
-      autoPoints = 0;
-      dopplerCost = 50;
-      level = 1;
-      timeLeft = 600;
-      bossHealth = 7500;
+    function updateUpgradeButtons() {
       upgrades.forEach((up, i) => {
-        up.cost = upgradePrices[i];
-        up.autoBonus = upgradeBonuses[i];
-        up.bought = 0;
+        const btn = document.getElementById(`upgrade-btn-${i}`);
+        const costSpan = document.getElementById(`upgrade-cost-${i}`);
+        const progress = document.getElementById(`progress-${i}`);
+        if (btn && costSpan && progress) {
+          costSpan.textContent = up.cost;
+          if (points >= up.cost) {
+            btn.classList.add('enabled');
+            progress.style.width = '100%';
+          } else {
+            btn.classList.remove('enabled');
+            const pct = Math.min(100, (points / up.cost) * 100);
+            progress.style.width = `${pct}%`;
+          }
+        }
       });
-      document.getElementById("restartButton").style.display = "none";
-      document.getElementById("statusMessage").textContent = "";
-      renderUpgrades();
-      updateUI();
+    }
+
+    function updateUI() {
+      document.getElementById('points').textContent = Math.floor(points);
+      document.getElementById('perClick').textContent = perClick;
+      document.getElementById('autoPoints').textContent = autoPoints.toFixed(1);
+      updateUpgradeButtons();
     }
 
     setInterval(() => {
       points += autoPoints;
-      timeLeft--;
-      if (timeLeft <= 0) nextLevel();
       updateUI();
     }, 1000);
 
-    document.addEventListener("keydown", function(e) {
+    function showBlockScreen() {
+      document.getElementById("blockScreen").style.display = "flex";
+    }
+
+    document.getElementById('clickCircle').addEventListener('click', clickCircle);
+
+    document.addEventListener("contextmenu", e => {
+      e.preventDefault();
+      showBlockScreen();
+    });
+
+    document.addEventListener("keydown", e => {
       if (
         e.key === "F12" ||
-        (e.ctrlKey && e.shiftKey && ["I", "J", "C"].includes(e.key.toUpperCase())) ||
-        (e.ctrlKey && e.key.toLowerCase() === "u")
+        (e.ctrlKey && e.shiftKey && ["I", "J", "C"].includes(e.key)) ||
+        (e.ctrlKey && e.key === "U")
       ) {
         e.preventDefault();
-        alert("Untersuchen ist deaktiviert.");
+        showBlockScreen();
       }
     });
-
-    document.addEventListener("contextmenu", function(e) {
-      e.preventDefault();
-    });
-
-    function handleBodyClick(e) {
-      const allowed = ['BUTTON', 'DIV'];
-      if (!allowed.includes(e.target.tagName)) {
-        e.stopPropagation();
-        e.preventDefault();
-      }
-    }
 
     renderUpgrades();
     updateUI();
