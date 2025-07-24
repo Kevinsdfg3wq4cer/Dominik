@@ -2,79 +2,110 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Rita Clicker Spiel mit Levels</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rita Clicker Spiel</title>
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap');
+
     body {
       margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(135deg, #202030, #3a3a5a);
-      color: #fff;
+      font-family: 'Orbitron', sans-serif;
+      background: linear-gradient(to right, #141e30, #243b55);
+      color: #f0f0f0;
       display: flex;
       flex-direction: column;
       align-items: center;
       padding: 2rem;
       min-height: 100vh;
     }
+
     h1 {
-      margin-bottom: 1rem;
+      font-size: 2.5rem;
+      margin-bottom: 2rem;
+      color: #00e6e6;
     }
+
     .circle {
-      width: 140px;
-      height: 140px;
+      width: 160px;
+      height: 160px;
       border-radius: 50%;
-      background: #ff6347;
+      background: radial-gradient(circle at center, #ff3cac, #784ba0);
       display: flex;
       align-items: center;
       justify-content: center;
+      box-shadow: 0 0 25px #ff3cac;
       cursor: pointer;
-      box-shadow: 0 0 20px #ff6347;
-      margin-bottom: 1rem;
+      transition: transform 0.2s ease;
+      margin-bottom: 2rem;
     }
+
+    .circle:hover {
+      transform: scale(1.1);
+    }
+
     .stats, .level-info {
       text-align: center;
-      margin-bottom: 1rem;
+      margin-bottom: 1.5rem;
     }
+
+    .level-info div, .stats div {
+      margin: 0.3rem 0;
+      font-size: 1.2rem;
+    }
+
+    button {
+      background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+      border: none;
+      color: #fff;
+      padding: 0.7rem 1.2rem;
+      border-radius: 12px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 10px #00e6e6;
+    }
+
+    button:hover:not(:disabled) {
+      transform: scale(1.05);
+      box-shadow: 0 0 15px #00ffff;
+    }
+
+    button:disabled {
+      opacity: 0.3;
+      box-shadow: none;
+    }
+
     .upgrades {
       display: flex;
       flex-wrap: wrap;
       gap: 1rem;
       justify-content: center;
-    }
-    .upgrade {
-      background: #3d3d5c;
-      padding: 1rem;
-      border-radius: 8px;
-      width: 200px;
-      text-align: center;
-    }
-    button {
-      padding: 0.5rem 1rem;
-      background: linear-gradient(to right, #28a745, #218838);
-      border: none;
-      color: white;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: bold;
-      font-size: 1rem;
-      transition: opacity 0.3s, transform 0.2s;
-    }
-    button:disabled {
-      opacity: 0.4;
-      pointer-events: none;
-    }
-    .upgrade button {
-      margin-top: 0.5rem;
-    }
-    #statusMessage {
       margin-top: 1rem;
-      font-size: 1.5rem;
+    }
+
+    .upgrade {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 1rem;
+      border-radius: 10px;
+      width: 220px;
+      text-align: center;
+      transition: background 0.3s ease;
+    }
+
+    .upgrade:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    #statusMessage {
+      margin-top: 1.5rem;
+      font-size: 1.8rem;
       font-weight: bold;
     }
   </style>
 </head>
 <body oncontextmenu="return false">
-  <h1>Rita Clicker Spiel</h1>
+  <h1>Rita Clicker</h1>
   <div class="circle" onclick="clickCircle()"></div>
   <div class="stats">
     <div>Punkte: <span id="points">0</span></div>
@@ -85,7 +116,7 @@
     <div>Level: <span id="level">1</span></div>
     <div>Zeit übrig: <span id="timeLeft">600</span> Sekunden</div>
     <div>Boss-Leben: <span id="bossHealth">7500</span></div>
-    <button onclick="nextLevel()">Level beenden (benötigt <span id="neededPoints">7500</span> Punkte)</button>
+    <button onclick="nextLevel()">Level beenden (benötigt <span id="neededPoints">7500</span>)</button>
   </div>
   <div>
     <button onclick="buyDoppler()">Doppler kaufen (<span id="dopplerCost">50</span>)</button>
