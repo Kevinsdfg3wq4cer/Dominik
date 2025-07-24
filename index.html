@@ -73,6 +73,7 @@
     button:disabled {
       opacity: 0.3;
       box-shadow: none;
+      cursor: not-allowed;
     }
 
     .upgrades {
@@ -116,7 +117,7 @@
     <div>Level: <span id="level">1</span></div>
     <div>Zeit übrig: <span id="timeLeft">600</span> Sekunden</div>
     <div>Boss-Leben: <span id="bossHealth">7500</span></div>
-    <button onclick="nextLevel()">Level beenden (benötigt <span id="neededPoints">7500</span>)</button>
+    <button id="levelButton" onclick="nextLevel()">Level beenden (benötigt <span id="neededPoints">7500</span>)</button>
   </div>
   <div>
     <button onclick="buyDoppler()">Doppler kaufen (<span id="dopplerCost">50</span>)</button>
@@ -201,6 +202,7 @@
       document.getElementById("timeLeft").textContent = timeLeft;
       document.getElementById("bossHealth").textContent = bossHealth;
       document.getElementById("neededPoints").textContent = bossHealth;
+      document.getElementById("levelButton").disabled = points < bossHealth;
       renderUpgrades();
     }
 
