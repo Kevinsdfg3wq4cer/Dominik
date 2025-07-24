@@ -164,15 +164,18 @@
     let autoPoints = 0;
     let dopplerCost = 50;
     const clickTimestamps = [];
-    const maxClicks = 20; // bis zu 20 Klicks speichern
+    const maxClicks = 30;
+
     const upgradeNames = [
       "Rita", "Leute", "Hallo Leute", "Jetzt hört aber auf", "Mir ist es egal",
       "Abschlussfest solo", "Zeichenunterricht", "Rita Ausraster", "RitaLover99", "Was heißt Auto auf Englisch?"
     ];
 
+    const upgradePrices = [100, 250, 2500, 15000, 50000, 150000, 500000, 1500000, 5000000, 15000000];
+
     const upgrades = upgradeNames.map((name, i) => ({
       name,
-      cost: 100 + i * 150,
+      cost: upgradePrices[i],
       autoBonus: 5,
       bought: 0
     }));
@@ -209,7 +212,7 @@
           up.autoBonus = newBonus;
         }
 
-        up.cost = Math.ceil(up.cost * 1.7);
+        up.cost = Math.ceil(up.cost * 2.2);
         up.bought++;
         renderUpgrades();
         updateUI();
