@@ -125,7 +125,7 @@
     }
   </style>
 </head>
-<body oncontextmenu="return false">
+<body oncontextmenu="return false" onclick="handleBodyClick(event)">
   <h1>Rita Clicker</h1>
   <div class="circle" onclick="clickCircle()"></div>
   <div class="stats">
@@ -285,6 +285,14 @@
     document.addEventListener("contextmenu", function(e) {
       e.preventDefault();
     });
+
+    function handleBodyClick(e) {
+      const allowed = ['BUTTON', 'DIV'];
+      if (!allowed.includes(e.target.tagName)) {
+        e.stopPropagation();
+        e.preventDefault();
+      }
+    }
 
     renderUpgrades();
     updateUI();
