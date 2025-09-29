@@ -1,333 +1,114 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Rita Clicker Spiel</title>ergesrgesrs
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap');
-
-    body {
-      margin: 0;
-      font-family: 'Orbitron', sans-serif;
-      background: linear-gradient(to right, #141e30, #243b55);
-      color: #f0f0f0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 2rem;
-      min-height: 100vh;
-    }
-
-    h1 {
-      font-size: 2.5rem;
-      margin-bottom: 2rem;
-      color: #00e6e6;
-      animation: glow 2s ease-in-out infinite alternate;
-    }
-
-    @keyframes glow {
-      from { text-shadow: 0 0 10px #00e6e6; }
-      to { text-shadow: 0 0 25px #00ffff; }
-    }
-
-    .circle {
-      width: 160px;
-      height: 160px;
-      border-radius: 50%;
-      background: radial-gradient(circle at center, #ff3cac, #784ba0);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 0 25px #ff3cac;
-      cursor: pointer;
-      transition: transform 0.2s ease;
-      margin-bottom: 2rem;
-      animation: pulse 1.5s infinite;
-    }
-
-    @keyframes pulse {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.05); }
-      100% { transform: scale(1); }
-    }
-
-    .circle:hover {
-      transform: scale(1.1);
-    }
-
-    .stats, .level-info {
-      text-align: center;
-      margin-bottom: 1.5rem;
-    }
-
-    .level-info div, .stats div {
-      margin: 0.3rem 0;
-      font-size: 1.2rem;
-    }
-
-    button {
-      background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
-      border: none;
-      color: #fff;
-      padding: 0.7rem 1.2rem;
-      border-radius: 12px;
-      font-size: 1rem;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      box-shadow: 0 0 10px #00e6e6;
-    }
-
-    button:hover:not(:disabled) {
-      transform: scale(1.05);
-      box-shadow: 0 0 15px #00ffff;
-    }
-
-    button:disabled {
-      opacity: 0.3;
-      box-shadow: none;
-      cursor: not-allowed;
-    }
-
-    .upgrades {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 1rem;
-      justify-content: center;
-      margin-top: 1rem;
-    }
-
-    .upgrade {
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      padding: 1rem;
-      border-radius: 10px;
-      width: 220px;
-      text-align: center;
-      transition: background 0.3s ease;
-      animation: fadeIn 0.5s ease;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .upgrade:hover {
-      background: rgba(255, 255, 255, 0.1);
-    }
-
-    #statusMessage {
-      margin-top: 1.5rem;
-      font-size: 1.8rem;
-      font-weight: bold;
-      animation: glow 1.5s infinite alternate;
-    }
-  </style>
-</head>
-<body oncontextmenu="return false" onclick="handleBodyClick(event)">
-  <h1>Rita Clicker</h1>
-  <div class="circle" onclick="clickCircle()"></div>
-  <div class="stats">
-    <div>Punkte: <span id="points">0</span></div>
-    <div>Pro Klick: <span id="perClick">1</span></div>
-    <div>RPS (Auto): <span id="autoPoints">0</span></div>
-  </div>
-  <div class="level-info">
-    <div>Level: <span id="level">1</span></div>
-    <div>Zeit übrig: <span id="timeLeft">600</span> Sekunden</div>
-    <div>Boss-Leben: <span id="bossHealth">7500</span></div>
-    <button id="levelButton" onclick="nextLevel()">Level beenden (benötigt <span id="neededPoints">7500</span>)</button>
-  </div>
-  <div>
-    <button onclick="buyDoppler()">Doppler kaufen (<span id="dopplerCost">50</span>)</button>
-  </div>
-  <div class="upgrades" id="upgradesContainer"></div>
-  <div id="statusMessage"></div>
-  <div>
-    <button id="restartButton" onclick="restartGame()" style="display:none; margin-top: 1rem;">🔁 Neustarten</button>
-  </div>
-
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-  <script>
-    let points = 0;
-    let perClick = 1;
-    let autoPoints = 0;
-    let dopplerCost = 50;
-    let level = 1;
-    let timeLeft = 600;
-    let bossHealth = 7500;
-    const maxLevel = 15;
-
-    const clickSound = new Audio('https://cdn.pixabay.com/download/audio/2022/03/15/audio_34da4c0193.mp3');
-    const upgradeSound = new Audio('https://cdn.pixabay.com/download/audio/2021/09/30/audio_2f9c5bdf18.mp3');
-    const victorySound = new Audio('https://cdn.pixabay.com/download/audio/2022/03/15/audio_9eb36e57cb.mp3');
-    const loseSound = new Audio('https://cdn.pixabay.com/download/audio/2022/03/16/audio_3f4c44ad0e.mp3');
-
-    const upgradeNames = ["Rita", "Leute", "Hallo Leute", "Jetzt hört aber auf", "Mir ist es egal", "Abschlussfest solo", "Zeichenunterricht", "Rita Ausraster", "RitaLover99", "Was heißt Auto auf Englisch?"];
-    const upgradePrices = [100, 250, 2500, 5000, 8000, 15000, 25000, 40000, 75000, 100000];
-    const upgradeBonuses = [5, 10, 15, 30, 60, 120, 250, 500, 800, 1500];
-    const upgrades = upgradeNames.map((name, i) => ({ name, cost: upgradePrices[i], autoBonus: upgradeBonuses[i], bought: 0 }));
-
-    function clickCircle() {
-      clickSound.play();
-      points += perClick;
-      updateUI();
-    }
-
-    function buyDoppler() {
-      if (points >= dopplerCost) {
-        points -= dopplerCost;
-        perClick++;
-        dopplerCost = Math.ceil(dopplerCost * 2);
-        upgradeSound.play();
-        updateUI();
-      }
-    }
-
-    function buyUpgrade(i) {
-      const up = upgrades[i];
-      if (points >= up.cost) {
-        points -= up.cost;
-        const bonus = up.bought === 0 ? up.autoBonus : up.autoBonus / 2 + 5;
-        autoPoints += bonus;
-        up.autoBonus = bonus;
-        up.bought++;
-        up.cost = Math.ceil(up.cost * 2.2);
-        upgradeSound.play();
-        renderUpgrades();
-        updateUI();
-      }
-    }
-
-    function renderUpgrades() {
-      const container = document.getElementById("upgradesContainer");
-      container.innerHTML = "";
-      upgrades.forEach((up, i) => {
-        const div = document.createElement("div");
-        div.className = "upgrade";
-        const btnDisabled = points < up.cost ? 'disabled' : '';
-        div.innerHTML = `
-          <strong>${up.name}</strong>
-          <p>Kosten: ${up.cost}</p>
-          <p>Gekauft: ${up.bought}</p>
-          <button onclick="buyUpgrade(${i})" ${btnDisabled}>Kaufen</button>
-        `;
-        container.appendChild(div);
-      });
-    }
-
-    function updateUI() {
-      document.getElementById("points").textContent = Math.floor(points);
-      document.getElementById("perClick").textContent = perClick;
-      document.getElementById("autoPoints").textContent = autoPoints.toFixed(1);
-      document.getElementById("dopplerCost").textContent = dopplerCost;
-      document.getElementById("level").textContent = level;
-      document.getElementById("timeLeft").textContent = timeLeft;
-      document.getElementById("bossHealth").textContent = bossHealth;
-      document.getElementById("neededPoints").textContent = bossHealth;
-      document.getElementById("levelButton").disabled = points < bossHealth;
-      renderUpgrades();
-    }
-
-    function nextLevel() {
-      const status = document.getElementById("statusMessage");
-      if (points >= bossHealth) {
-        if (level >= maxLevel) {
-          status.textContent = "🎉 Du hast das Spiel gewonnen!";
-          confetti();
-          victorySound.play();
-          document.getElementById("restartButton").style.display = "inline-block";
-          return;
+    <meta charset="UTF-8" />
+    <title>Fortnite Buttons</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #121212;
+            color: white;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
         }
-        status.textContent = "Victory!";
-        victorySound.play();
-        setTimeout(() => {
-          level++;
-          timeLeft = 600;
-          bossHealth = Math.ceil(bossHealth * 1.15);
-          status.textContent = "";
-          updateUI();
-        }, 1500);
-      } else {
-        status.textContent = "Lose!";
-        loseSound.play();
-        setTimeout(() => {
-          status.textContent = "";
-        }, 1500);
-      }
-    }
 
-    function restartGame() {
-      points = 0;
-      perClick = 1;
-      autoPoints = 0;
-      dopplerCost = 50;
-      level = 1;
-      timeLeft = 600;
-      bossHealth = 7500;
-      upgrades.forEach((up, i) => {
-        up.cost = upgradePrices[i];
-        up.autoBonus = upgradeBonuses[i];
-        up.bought = 0;
-      });
-      document.getElementById("restartButton").style.display = "none";
-      document.getElementById("statusMessage").textContent = "";
-      renderUpgrades();
-      updateUI();
-    }
+        h1 {
+            font-size: 4rem;
+            margin-bottom: 40px;
+        }
 
-    function saveGame() {
-      const saveData = {
-        points, perClick, autoPoints, dopplerCost, level, timeLeft, bossHealth, upgrades
-      };
-      localStorage.setItem("ritaClickerSave", JSON.stringify(saveData));
-    }
+        .button-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 40px;
+        }
 
-    function loadGame() {
-      const data = localStorage.getItem("ritaClickerSave");
-      if (data) {
-        const save = JSON.parse(data);
-        Object.assign(window, save);
-        renderUpgrades();
-        updateUI();
-      }
-    }
+        button {
+            background-color: #2a9df4;
+            border: none;
+            padding: 15px 25px;
+            font-size: 1.1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            color: white;
+            transition: background-color 0.3s;
+        }
 
-    setInterval(() => {
-      points += autoPoints;
-      timeLeft--;
-      if (timeLeft <= 0) nextLevel();
-      //updateUI();
-      saveGame();
-    }, 1000);
+        button:hover {
+            background-color: #1e7adf;
+        }
 
-    document.addEventListener("keydown", function(e) {
-      if (
-        e.key === "F12" ||
-        (e.ctrlKey && e.shiftKey && ["I", "J", "C"].includes(e.key.toUpperCase())) ||
-        (e.ctrlKey && e.key.toLowerCase() === "u")
-      ) {
-        e.preventDefault();
-        alert("Untersuchen ist deaktiviert.");
-      }
-    });
+        #content {
+            font-size: 1.5rem;
+            margin-top: 20px;
+            min-height: 100px;
+        }
 
-    document.addEventListener("contextmenu", function(e) {
-      e.preventDefault();
-    });
+        #escape-btn {
+            margin-top: 30px;
+            padding: 10px 20px;
+            font-size: 1rem;
+            background-color: #f44336;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            color: white;
+            display: none; /* Anfangs versteckt */
+            transition: background-color 0.3s;
+        }
 
-    function handleBodyClick(e) {
-      const allowed = ['BUTTON', 'DIV'];
-      if (!allowed.includes(e.target.tagName)) {
-        e.stopPropagation();
-        e.preventDefault();
-      }
-    }
+        #escape-btn:hover {
+            background-color: #d32f2f;
+        }
+    </style>
+</head>
+<body>
 
-    renderUpgrades();
-    loadGame();
-    updateUI();
-  </script>
+    <h1>Fortnite</h1>
+
+    <div id="start-screen">
+        <div class="button-container">
+            <button data-text="ist gut lappenleo mate das aura">kommcallde</button>
+            <button data-text="ist zwar steal the brainrot süchtig aber trozdem der goat">Uschi_Toaster</button>
+            <button data-text="ist mein wunderkind jetzt noch ok aber primetime ist comming mein sohn">fazon</button>
+            <button data-text="er ist der beste spieler ich liebe ihn bester duomate">lapppenleo</button>
+            <button data-text="er ist die definizion von angst vor allem in boxfights">Face_tasche</button>
+             <button data-text="die person die dich im cup beim rotieren entweder 200 pump oder 200 lasert">Doubel_Bigmac</button>
+        </div>
+    </div>
+
+    <div id="content-screen" style="display:none;">
+        <div id="content"></div>
+        <button id="escape-btn">Escape</button>
+    </div>
+
+    <script>
+        const buttons = document.querySelectorAll('#start-screen button');
+        const startScreen = document.getElementById('start-screen');
+        const contentScreen = document.getElementById('content-screen');
+        const contentDiv = document.getElementById('content');
+        const escapeBtn = document.getElementById('escape-btn');
+
+        buttons.forEach(button => {
+            button.addEventListener('click', () => {
+                const text = button.getAttribute('data-text');
+                contentDiv.textContent = text;
+                startScreen.style.display = 'none';
+                contentScreen.style.display = 'block';
+                escapeBtn.style.display = 'inline-block';
+            });
+        });
+
+        escapeBtn.addEventListener('click', () => {
+            contentDiv.textContent = '';
+            startScreen.style.display = 'block';
+            contentScreen.style.display = 'none';
+            escapeBtn.style.display = 'none';
+        });
+    </script>
+
 </body>
 </html>
