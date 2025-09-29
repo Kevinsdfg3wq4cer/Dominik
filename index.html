@@ -1,114 +1,205 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-    <meta charset="UTF-8" />
-    <title>Fortnite Buttons</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #121212;
-            color: white;
-            margin: 0;
-            padding: 20px;
-            text-align: center;
-        }
+<meta charset="UTF-8" />
+<title>Fortnite</title>
+<style>
+  /* Grund-Setup */
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 20px;
+    background-color: #121212;
+    color: #eee;
+    text-align: center;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
 
-        h1 {
-            font-size: 4rem;
-            margin-bottom: 40px;
-        }
+  h1 {
+    font-size: 4rem;
+    margin-bottom: 40px;
+    text-shadow: 2px 2px 8px rgba(0,0,0,0.9);
+  }
 
-        .button-container {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            flex-wrap: wrap;
-            margin-bottom: 40px;
-        }
+  /* Container für Buttons */
+  .button-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    max-width: 900px;
+    margin-bottom: 40px;
+    background: rgba(20, 20, 20, 0.75);
+    padding: 25px 30px;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.7);
+  }
 
-        button {
-            background-color: #2a9df4;
-            border: none;
-            padding: 15px 25px;
-            font-size: 1.1rem;
-            border-radius: 8px;
-            cursor: pointer;
-            color: white;
-            transition: background-color 0.3s;
-        }
+  button {
+    background-color: #2a9df4;
+    border: none;
+    padding: 15px 28px;
+    font-size: 1.2rem;
+    border-radius: 10px;
+    cursor: pointer;
+    color: white;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 5px 12px rgba(0,0,0,0.3);
+    flex: 1 1 130px;
+    max-width: 180px;
+  }
 
-        button:hover {
-            background-color: #1e7adf;
-        }
+  button:hover, button:focus {
+    background-color: #1e7adf;
+    transform: scale(1.05);
+    outline: none;
+  }
 
-        #content {
-            font-size: 1.5rem;
-            margin-top: 20px;
-            min-height: 100px;
-        }
+  /* Content Screen */
+  #content-screen {
+    position: relative;
+    max-width: 900px;
+    width: 100%;
+    min-height: 300px;
+    background: rgb(25, 25, 25);
+    border-radius: 14px;
+    box-shadow: 0 10px 30px rgb(0, 0, 0);
+    padding: 30px 25px;
+    color: #fff;
+    overflow: hidden;
+    display: none;
+  }
 
-        #escape-btn {
-            margin-top: 30px;
-            padding: 10px 20px;
-            font-size: 1rem;
-            background-color: #f44336;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            color: white;
-            display: none; /* Anfangs versteckt */
-            transition: background-color 0.3s;
-        }
+  #content {
+    position: relative;
+    font-size: 1.7rem;
+    z-index: 2;
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.5;
+    text-shadow: 2px 2px 6px rgba(0,0,0,0.8);
+  }
 
-        #escape-btn:hover {
-            background-color: #d32f2f;
-        }
-    </style>
+  #background-image {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 80%;
+    max-width: 700px;
+    height: auto;
+    max-height: 280px;
+    transform: translate(-50%, -50%);
+    opacity: 0.8; /* stärker sichtbar */
+    object-fit: contain;
+    border-radius: 12px;
+    pointer-events: none;
+    user-select: none;
+    z-index: 0;
+    filter: brightness(1.2) drop-shadow(0 0 15px rgba(0,0,0,0.8));
+  }
+
+  #escape-btn {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 12px 26px;
+    font-size: 1.1rem;
+    background-color: #f44336;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    color: white;
+    box-shadow: 0 5px 15px rgb(180, 40, 40);
+    transition: background-color 0.3s ease;
+    z-index: 100;
+  }
+
+  #escape-btn:hover, #escape-btn:focus {
+    background-color: #d32f2f;
+    outline: none;
+  }
+
+  /* Responsive */
+  @media (max-width: 600px) {
+    h1 {
+      font-size: 3rem;
+      margin-bottom: 30px;
+    }
+
+    button {
+      flex: 1 1 100%;
+      max-width: none;
+    }
+
+    #content {
+      font-size: 1.4rem;
+    }
+
+    #background-image {
+      max-height: 180px;
+      width: 90%;
+    }
+  }
+</style>
 </head>
 <body>
 
-    <h1>Fortnite</h1>
+<h1>Fortnite</h1>
 
-    <div id="start-screen">
-        <div class="button-container">
-            <button data-text="ist gut lappenleo mate das aura">kommcallde</button>
-            <button data-text="ist zwar steal the brainrot süchtig aber trozdem der goat">Uschi_Toaster</button>
-            <button data-text="ist mein wunderkind jetzt noch ok aber primetime ist comming mein sohn">fazon</button>
-            <button data-text="er ist der beste spieler ich liebe ihn bester duomate">lapppenleo</button>
-            <button data-text="er ist die definizion von angst vor allem in boxfights">Face_tasche</button>
-             <button data-text="die person die dich im cup beim rotieren entweder 200 pump oder 200 lasert">Doubel_Bigmac</button>
-        </div>
-    </div>
+<div id="start-screen">
+  <div class="button-container">
+    <button data-text="mach die Wall nicht auf sonst 200" data-img="https://i.pinimg.com/736x/b4/ec/e2/b4ece2297e27c0be301ca8848bc9374d.jpg">Double_Bigmac</button>
+    <button data-text="ist der goat" data-img="https://www.hdwallpapers.in/download/scarlet_commander_fortnite_skin_orange_background_hd_fortnite-1280x720.jpg">kommcallde</button>
+    <button data-text="ist zwar steal the brainrot süchtig aber trozdem der goat" data-img="https://static0.gamerantimages.com/wordpress/wp-content/uploads/2024/07/adidas-skin-bundle-fortnite.jpg?q=49&fit=contain&w=750&h=422&dpr=2">Uschi_Toaster</button>
+    <button data-text="ist mein wunderkind jetzt noch ok aber primetime ist comming mein sohn" data-img="https://i.pinimg.com/736x/6c/dd/6a/6cdd6acb7101a4acb25ffa522e4f9750.jpg">fazon</button>
+    <button data-text="er ist der beste spieler ich liebe ihn bester duomate" data-img="https://i.ytimg.com/vi/xce0140B4bo/maxresdefault.jpg">lapppenleo</button>
+    <button data-text="er ist die definizion von angst vor allem in boxfights" data-img="https://i.ytimg.com/vi/t5hHjYFJnCY/maxresdefault.jpg">Face_tasche</button>
+    <button data-text="er ist die definizion von angst vor allem in boxfights" data-img="https://i.pinimg.com/736x/b4/ec/e2/b4ece2297e27c0be301ca8848bc9374d.jpg">Double_Bigmac</button>
+  </div>
+</div>
 
-    <div id="content-screen" style="display:none;">
-        <div id="content"></div>
-        <button id="escape-btn">Escape</button>
-    </div>
+<div id="content-screen">
+  <img id="background-image" src="" alt="Hintergrundbild" />
+  <div id="content"></div>
+  <button id="escape-btn">Escape</button>
+</div>
 
-    <script>
-        const buttons = document.querySelectorAll('#start-screen button');
-        const startScreen = document.getElementById('start-screen');
-        const contentScreen = document.getElementById('content-screen');
-        const contentDiv = document.getElementById('content');
-        const escapeBtn = document.getElementById('escape-btn');
+<script>
+  const buttons = document.querySelectorAll('#start-screen button');
+  const startScreen = document.getElementById('start-screen');
+  const contentScreen = document.getElementById('content-screen');
+  const contentDiv = document.getElementById('content');
+  const backgroundImage = document.getElementById('background-image');
+  const escapeBtn = document.getElementById('escape-btn');
 
-        buttons.forEach(button => {
-            button.addEventListener('click', () => {
-                const text = button.getAttribute('data-text');
-                contentDiv.textContent = text;
-                startScreen.style.display = 'none';
-                contentScreen.style.display = 'block';
-                escapeBtn.style.display = 'inline-block';
-            });
-        });
+  buttons.forEach(button => {
+    button.addEventListener('click', () => {
+      const text = button.getAttribute('data-text');
+      const imgSrc = button.getAttribute('data-img');
 
-        escapeBtn.addEventListener('click', () => {
-            contentDiv.textContent = '';
-            startScreen.style.display = 'block';
-            contentScreen.style.display = 'none';
-            escapeBtn.style.display = 'none';
-        });
-    </script>
+      contentDiv.textContent = text;
+      backgroundImage.src = imgSrc;
+
+      startScreen.style.display = 'none';
+      contentScreen.style.display = 'block';
+      escapeBtn.style.display = 'inline-block';
+    });
+  });
+
+  escapeBtn.addEventListener('click', () => {
+    contentDiv.textContent = '';
+    backgroundImage.src = '';
+    startScreen.style.display = 'block';
+    contentScreen.style.display = 'none';
+    escapeBtn.style.display = 'none';
+  });
+</script>
 
 </body>
 </html>
+
+
