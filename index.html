@@ -1,208 +1,148 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-<meta charset="UTF-8" />
-<title>Fortnite</title>
-<style>
-  /* Grund-Setup */
-  body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    margin: 0;
-    padding: 20px;
-    background-color: #121212;
-    color: #eee;
-    text-align: center;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
+<meta name="description" content="Grill & Chill BBQ in St. Michael – leckere Burger & Pizza bei Michi. Frisch gegrillt, rustikal & mit Liebe gemacht.">
+<meta name="keywords" content="Burger, Pizza, Grill, BBQ, St. Michael, Michi, Restaurant, Essen, Grill & Chill, Grillrestaurant">
+<meta name="author" content="Grill & Chill BBQ Michi">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://www.deine-domain.at/">
+<meta property="og:title" content="Grill & Chill BBQ St. Michael">
+<meta property="og:description" content="Burger & Pizza vom Feinsten bei Michi – Grill & Chill in St. Michael.">
+<meta property="og:image" content="https://www.deine-domain.at/bild.jpg">
+<meta property="og:url" content="https://www.deine-domain.at/">
+<meta name="twitter:card" content="summary_large_image">
 
-  h1 {
-    font-size: 4rem;
-    margin-bottom: 40px;
-    text-shadow: 2px 2px 8px rgba(0,0,0,0.9);
-  }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Grill & Chill</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: url('https://images.unsplash.com/photo-1551218808-94e220e084d2') no-repeat center center/cover;
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      text-align: center;
+      backdrop-filter: brightness(0.8);
+    }
 
-  /* Container für Buttons */
-  .button-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 20px;
-    max-width: 900px;
-    margin-bottom: 40px;
-    background: rgba(20, 20, 20, 0.75);
-    padding: 25px 30px;
-    border-radius: 12px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.7);
-  }
+    header {
+      background: rgba(0, 0, 0, 0.7);
+      width: 100%;
+      padding: 1rem;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+    }
 
-  button {
-    background-color: #2a9df4;
-    border: none;
-    padding: 15px 28px;
-    font-size: 1.2rem;
-    border-radius: 10px;
-    cursor: pointer;
-    color: white;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-    box-shadow: 0 5px 12px rgba(0,0,0,0.3);
-    flex: 1 1 130px;
-    max-width: 180px;
-  }
-
-  button:hover, button:focus {
-    background-color: #1e7adf;
-    transform: scale(1.05);
-    outline: none;
-  }
-
-  /* Content Screen */
-  #content-screen {
-    position: relative;
-    max-width: 900px;
-    width: 100%;
-    min-height: 300px;
-    background: rgb(25, 25, 25);
-    border-radius: 14px;
-    box-shadow: 0 10px 30px rgb(0, 0, 0);
-    padding: 30px 25px;
-    color: #fff;
-    overflow: hidden;
-    display: none;
-  }
-
-  #content {
-    position: relative;
-    font-size: 1.7rem;
-    z-index: 2;
-    max-width: 600px;
-    margin: 0 auto;
-    line-height: 1.5;
-    text-shadow: 2px 2px 6px rgba(0,0,0,0.8);
-  }
-
-  #background-image {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 80%;
-    max-width: 700px;
-    height: auto;
-    max-height: 280px;
-    transform: translate(-50%, -50%);
-    opacity: 0.8; /* stärker sichtbar */
-    object-fit: contain;
-    border-radius: 12px;
-    pointer-events: none;
-    user-select: none;
-    z-index: 0;
-    filter: brightness(1.2) drop-shadow(0 0 15px rgba(0,0,0,0.8));
-  }
-
-  #escape-btn {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    padding: 12px 26px;
-    font-size: 1.1rem;
-    background-color: #f44336;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-    color: white;
-    box-shadow: 0 5px 15px rgb(180, 40, 40);
-    transition: background-color 0.3s ease;
-    z-index: 100;
-  }
-
-  #escape-btn:hover, #escape-btn:focus {
-    background-color: #d32f2f;
-    outline: none;
-  }
-
-  /* Responsive */
-  @media (max-width: 600px) {
     h1 {
-      font-size: 3rem;
-      margin-bottom: 30px;
+      margin: 0;
+      font-size: 2.5rem;
+      letter-spacing: 2px;
+      color: #ffae42;
+      text-shadow: 2px 2px 8px black;
+    }
+
+    nav {
+      margin: 1rem 0;
     }
 
     button {
-      flex: 1 1 100%;
-      max-width: none;
+      background: #5a2e0e;
+      color: #fff;
+      border: none;
+      padding: 0.8rem 1.5rem;
+      margin: 0.3rem;
+      font-size: 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
     }
 
-    #content {
-      font-size: 1.4rem;
+    button:hover {
+      background: #ffae42;
+      color: #000;
     }
 
-    #background-image {
-      max-height: 180px;
-      width: 90%;
+    .content {
+      background: rgba(0, 0, 0, 0.6);
+      border-radius: 10px;
+      padding: 2rem;
+      margin: 1rem;
+      width: 80%;
+      max-width: 700px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.6);
+      display: none;
+      animation: fadeIn 0.5s ease forwards;
     }
-  }
-</style>
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    footer {
+      margin-top: auto;
+      background: rgba(0,0,0,0.7);
+      width: 100%;
+      text-align: center;
+      padding: 1rem;
+      color: #ccc;
+      font-size: 0.9rem;
+    }
+  </style>
 </head>
 <body>
+  <header>
+    <h1>🔥 Michis Grill und BBQ 🔥</h1>
+  </header>
 
-<h1>Fortnite</h1>
+  <nav>
+    <button onclick="showSection('info')">Informationen</button>
+    <button onclick="showSection('zeiten')">Öffnungszeiten</button>
+    <button onclick="showSection('speisekarte')">Speisekarte</button>
+  </nav>
 
-<div id="start-screen">
-  <div class="button-container">
-    <button data-text="mach die Wall nicht auf sonst 200" data-img="https://i.pinimg.com/736x/b4/ec/e2/b4ece2297e27c0be301ca8848bc9374d.jpg">Double_Bigmac</button>
-    <button data-text="ist der goat" data-img="https://www.hdwallpapers.in/download/scarlet_commander_fortnite_skin_orange_background_hd_fortnite-1280x720.jpg">kommcallde</button>
-    <button data-text="Geiler hund ich liebe ihn er ist mein papa
-      " data-img="https://static0.gamerantimages.com/wordpress/wp-content/uploads/2024/07/adidas-skin-bundle-fortnite.jpg?q=49&fit=contain&w=750&h=422&dpr=2">Uschi_Toaster</button>
-    <button data-text="ist mein wunderkind jetzt noch ok aber primetime ist comming mein sohn" data-img="https://i.pinimg.com/736x/6c/dd/6a/6cdd6acb7101a4acb25ffa522e4f9750.jpg">fazon</button>
-    <button data-text="er ist der beste spieler ich liebe ihn bester duomate" data-img="https://i.ytimg.com/vi/xce0140B4bo/maxresdefault.jpg">lapppenleo</button>
-    <button data-text="er ist die definizion von angst vor allem in boxfights" data-img="https://i.ytimg.com/vi/t5hHjYFJnCY/maxresdefault.jpg">Face_tasche</button>
-    <button data-text="er ist die definizion von angst vor allem in boxfights" data-img="https://i.pinimg.com/736x/b4/ec/e2/b4ece2297e27c0be301ca8848bc9374d.jpg">Double_Bigmac</button>
+  <div id="info" class="content">
+    <h2>Über uns</h2>
+    <p>Telefonnummer: 06762321132<p>
+    </p>
+       E-Mail: Michi.grill@gmail.com<p>
+   <p> Wir haben Hochqualifizierte Leute bei uns die in Ihren Leben schon sehr viel Erfahrungen im zubereiten solcher Spezialertäten gesammelt haben
+    </p>
   </div>
-</div>
+ 
+  <div id="zeiten" class="content">
+    <h2>Öffnungszeiten</h2>
+    <p>Trage hier deine Öffnungszeiten ein, z. B.:</p>
+    <ul style="list-style:none; padding:0;">
+      <li>Mo–Fr: 18:00 – 22:00 Uhr</li>
+      <li>Sa: 12:00 – 23:00 Uhr</li>
+      <li>So: Ruhetag</li>
+    </ul>
+  </div>
 
-<div id="content-screen">
-  <img id="background-image" src="" alt="Hintergrundbild" />
-  <div id="content"></div>
-  <button id="escape-btn">Escape</button>
-</div>
+  <div id="speisekarte" class="content">
+    <h2>Speisekarte</h2>
+    <p>Unsere Speisekarte:</p>
+    <ul style="list-style:none; padding:0;">
+      <li>🔥 BBQ-Burger — 9,90 €</li>
+      <li>🥩 Rindersteak — 14,50 €</li>
+      <li>  <li>🍕 Pizza — 8,50 €</li>
+    </ul>
+  </div>
 
-<script>
-  const buttons = document.querySelectorAll('#start-screen button');
-  const startScreen = document.getElementById('start-screen');
-  const contentScreen = document.getElementById('content-screen');
-  const contentDiv = document.getElementById('content');
-  const backgroundImage = document.getElementById('background-image');
-  const escapeBtn = document.getElementById('escape-btn');
+  <footer>
+    © 2025 Grill & Chill BBQ – Mit Liebe am Feuer gemacht 🔥
+  </footer>
 
-  buttons.forEach(button => {
-    button.addEventListener('click', () => {
-      const text = button.getAttribute('data-text');
-      const imgSrc = button.getAttribute('data-img');
-
-      contentDiv.textContent = text;
-      backgroundImage.src = imgSrc;
-
-      startScreen.style.display = 'none';
-      contentScreen.style.display = 'block';
-      escapeBtn.style.display = 'inline-block';
-    });
-  });
-
-  escapeBtn.addEventListener('click', () => {
-    contentDiv.textContent = '';
-    backgroundImage.src = '';
-    startScreen.style.display = 'block';
-    contentScreen.style.display = 'none';
-    escapeBtn.style.display = 'none';
-  });
-</script>
-
+  <script>
+    function showSection(id) {
+      document.querySelectorAll('.content').forEach(sec => sec.style.display = 'none');
+      document.getElementById(id).style.display = 'block';
+    }
+  </script>
 </body>
 </html>
-
-
-
-
