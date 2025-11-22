@@ -1,189 +1,487 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-<meta name="description" content="Grill & Chill BBQ in St. Michael – leckere Burger & Pizza bei Michi. Frisch gegrillt, rustikal & mit Liebe gemacht.">
-<meta name="keywords" content="Burger, Pizza, Grill, BBQ, St. Michael, Michi, Restaurant, Essen, Grill & Chill, Grillrestaurant">
-<meta name="author" content="Grill & Chill BBQ Michi">
-<meta name="robots" content="index, follow">
-<link rel="canonical" href="https://www.deine-domain.at/">
-<meta property="og:title" content="Grill & Chill BBQ St. Michael">
-<meta property="og:description" content="Burger & Pizza vom Feinsten bei Michi – Grill & Chill in St. Michael.">
-<meta property="og:image" content="https://www.deine-domain.at/bild.jpg">
-<meta property="og:url" content="https://www.deine-domain.at/">
-<meta name="twitter:card" content="summary_large_image">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Der Weg zum Business</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Grill & Chill</title>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
 
-<style>
-  body {
-    margin: 0;
-    font-family: 'Segoe UI', sans-serif;
-    background: url('https://images.unsplash.com/photo-1551218808-94e220e084d2') no-repeat center center/cover;
-    color: #fff;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-    text-align: center;
-    position: relative;
-  }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
 
-  header {
-    background: rgba(0, 0, 0, 0.7);
-    width: 100%;
-    padding: 1rem;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.5);
-  }
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
 
-  h1 {
-    margin: 0;
-    font-size: 2.5rem;
-    letter-spacing: 2px;
-    color: #ffae42;
-    text-shadow: 2px 2px 8px black;
-  }
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
 
-  #startbild {
-    width: 100%;
-    max-height: 350px;
-    object-fit: cover;
-    border-bottom: 4px solid #ffae42;
-  }
+        .tab-container {
+            display: flex;
+            background: #f5f5f5;
+            border-bottom: 2px solid #ddd;
+        }
 
-  nav {
-    margin: 1rem 0;
-  }
+        .tab {
+            flex: 1;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            font-size: 1.2em;
+            font-weight: bold;
+            transition: all 0.3s;
+            background: #e0e0e0;
+        }
 
-  button {
-    background: #5a2e0e;
-    color: #fff;
-    border: none;
-    padding: 0.8rem 1.5rem;
-    margin: 0.3rem;
-    font-size: 1rem;
-    border-radius: 12px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-  }
+        .tab:hover {
+            background: #d0d0d0;
+        }
 
-  button:hover {
-    background: #ffae42;
-    color: #000;
-  }
+        .tab.active {
+            background: white;
+            color: #667eea;
+            border-bottom: 3px solid #667eea;
+        }
 
-  .content {
-    background: rgba(0, 0, 0, 0.6);
-    border-radius: 10px;
-    padding: 2rem;
-    margin: 1rem;
-    width: 80%;
-    max-width: 700px;
-    box-shadow: 0 0 15px rgba(0,0,0,0.6);
-    display: none;
-    animation: fadeIn 0.5s ease forwards;
-    position: relative;
-  }
+        .view-toggle {
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+            gap: 10px;
+        }
 
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
+        .view-btn {
+            padding: 10px 30px;
+            border: 2px solid #667eea;
+            background: white;
+            color: #667eea;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
 
-  .content img {
-    width: 100%;
-    border-radius: 10px;
-    margin-top: 1rem;
-    box-shadow: 0 0 10px rgba(0,0,0,0.5);
-  }
+        .view-btn:hover {
+            background: #667eea;
+            color: white;
+        }
 
-  #zeiten img {
-    width: 150px;
-    position: absolute;
-    bottom: 15px;
-    right: 15px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.5);
-  }
+        .view-btn.active {
+            background: #667eea;
+            color: white;
+        }
 
-  footer {
-    margin-top: auto;
-    background: rgba(0,0,0,0.7);
-    width: 100%;
-    text-align: center;
-    padding: 1rem;
-    color: #ccc;
-    font-size: 0.9rem;
-  }
-</style>
+        .content {
+            padding: 30px;
+        }
+
+        .todo-list {
+            display: none;
+        }
+
+        .todo-list.active {
+            display: block;
+        }
+
+        .todo-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            margin-bottom: 10px;
+            background: #f9f9f9;
+            border-radius: 10px;
+            transition: all 0.3s;
+        }
+
+        .todo-item:hover {
+            background: #f0f0f0;
+            transform: translateX(5px);
+        }
+
+        .todo-item.completed {
+            background: #d4edda;
+        }
+
+        .todo-item input[type="checkbox"] {
+            width: 25px;
+            height: 25px;
+            margin-right: 15px;
+            cursor: pointer;
+        }
+
+        .todo-item label {
+            flex: 1;
+            font-size: 1.1em;
+            cursor: pointer;
+        }
+
+        .calendar-view {
+            display: none;
+        }
+
+        .calendar-view.active {
+            display: block;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .calendar-day {
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .calendar-day.complete {
+            background: #d4edda;
+            border: 2px solid #28a745;
+        }
+
+        .calendar-day.incomplete {
+            background: #f8d7da;
+            border: 2px solid #dc3545;
+        }
+
+        .calendar-day.partial {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+        }
+
+        .date {
+            font-weight: bold;
+            margin-bottom: 5px;
+            font-size: 0.9em;
+        }
+
+        .stats {
+            font-size: 0.8em;
+            color: #666;
+        }
+
+        .today-indicator {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 5px;
+            font-size: 0.7em;
+            margin-top: 5px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: #e0e0e0;
+            border-radius: 5px;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #28a745;
+            transition: width 0.3s;
+        }
+    </style>
 </head>
 <body>
-  <header>
-    <h1>🔥 Michis Grill und BBQ 🔥</h1>
-  </header>
+    <div class="container">
+        <header>
+            <h1>🚀 Der Weg zum Business</h1>
+            <p>Tägliche Aufgaben für deinen Erfolg</p>
+        </header>
 
-  <!-- Startseitenbild -->
-  <img id="startbild" src="" alt="Startbild">
+        <div class="tab-container">
+            <div class="tab active" data-person="lukas">Lukas</div>
+            <div class="tab" data-person="michael">Michael</div>
+        </div>
 
-  <nav>
-    <button onclick="showSection('info')">Informationen</button>
-    <button onclick="showSection('zeiten')">Öffnungszeiten</button>
-    <button onclick="showSection('speisekarte')">Speisekarte</button>
-  </nav>
+        <div class="view-toggle">
+            <button class="view-btn active" data-view="today">Heute</button>
+            <button class="view-btn" data-view="calendar">Kalender</button>
+        </div>
 
-  <div id="info" class="content">
-    <h2>Über uns</h2>
-    <p>Telefonnummer: 06762321132</p>
-    <p>E-Mail: Michi.grill@gmail.com</p>
-    <p>Wir haben hochqualifizierte Leute bei uns, die schon sehr viel Erfahrung im Zubereiten solcher Spezialitäten gesammelt haben.</p>
-    <img id="infoBild" src="" alt="Info Bild">
-  </div>
+        <div class="content">
+            <!-- Lukas To-Do Liste -->
+            <div id="lukas-today" class="todo-list active">
+                <h2>Lukas - Heutige Aufgaben</h2>
+                <div id="lukas-todos"></div>
+                <div class="progress-bar">
+                    <div id="lukas-progress" class="progress-fill" style="width: 0%"></div>
+                </div>
+            </div>
 
-  <div id="zeiten" class="content">
-    <h2>Öffnungszeiten</h2>
-    <ul style="list-style:none; padding:0;">
-      <li>Mo–Fr: 18:00 – 22:00 Uhr</li>
-      <li>Sa: 12:00 – 23:00 Uhr</li>
-      <li>So: Ruhetag</li>
-    </ul>
-    <img id="zeitenBild" src="" alt="Bild Öffnungszeiten">
-  </div>
+            <!-- Michael To-Do Liste -->
+            <div id="michael-today" class="todo-list">
+                <h2>Michael - Heutige Aufgaben</h2>
+                <div id="michael-todos"></div>
+                <div class="progress-bar">
+                    <div id="michael-progress" class="progress-fill" style="width: 0%"></div>
+                </div>
+            </div>
 
-  <div id="speisekarte" class="content">
-    <h2>Speisekarte</h2>
-    <ul style="list-style:none; padding:0;">
-      <li>🔥 BBQ-Burger — 9,90 €</li>
-      <li>🥩 Rindersteak — 14,50 €</li>
-      <li>🍕 Pizza — 8,50 €</li>
-    </ul>
-    <img id="speisekarteBild" src="" alt="Speisekarte Bild">
-  </div>
+            <!-- Lukas Kalender -->
+            <div id="lukas-calendar" class="calendar-view">
+                <h2>Lukas - Kalender Übersicht</h2>
+                <div id="lukas-calendar-grid" class="calendar-grid"></div>
+            </div>
 
-  <footer>
-    © 2025 Grill & Chill BBQ – Mit Liebe am Feuer gemacht 🔥
-  </footer>
+            <!-- Michael Kalender -->
+            <div id="michael-calendar" class="calendar-view">
+                <h2>Michael - Kalender Übersicht</h2>
+                <div id="michael-calendar-grid" class="calendar-grid"></div>
+            </div>
+        </div>
+    </div>
 
-  <script>
-    function showSection(id) {
-      document.querySelectorAll('.content').forEach(sec => sec.style.display = 'none');
-      document.getElementById(id).style.display = 'block';
-    }
+    <script>
+        // Aufgaben definieren
+        const tasks = {
+            lukas: [
+                'youtube video hochladen',
+                'youtube short video hochladen',
+                'website checken',
+                'aufgaben erledigen',
+                'wissen erweitern'
+            ],
+            michael: [
+                'youtube video hochladen',
+                'youtube short video hochladen',
+                'wissen erweitern',
+                'crypto investieren/rechachiert',
+                'algemeine probleme lösen'
+            ]
+        };
 
-    
-    const bilder = {
-      start: "IMG-20230507-WA0000",     
-      info: "IMG-20220702-WA0000",       
-      speisekarte: "IMG-20250323-WA0001", 
-      zeiten: "IMG-20220702-WA0000 (1)"     
-    };
+        let currentPerson = 'lukas';
+        let currentView = 'today';
 
-  
-    document.getElementById("startbild").src = bilder.start;
-    document.getElementById("infoBild").src = bilder.info;
-    document.getElementById("speisekarteBild").src = bilder.speisekarte;
-    document.getElementById("zeitenBild").src = bilder.zeiten;
-  </script>
+        // Heutiges Datum
+        function getTodayKey() {
+            const today = new Date();
+            return `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+        }
+
+        // LocalStorage Wrapper
+        function getData(key) {
+            const data = localStorage.getItem(key);
+            return data ? JSON.parse(data) : null;
+        }
+
+        function setData(key, value) {
+            localStorage.setItem(key, JSON.stringify(value));
+        }
+
+        function getAllKeys(prefix) {
+            const keys = [];
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key.startsWith(prefix)) {
+                    keys.push(key);
+                }
+            }
+            return keys;
+        }
+
+        // Initialisierung
+        function init() {
+            checkAndResetDaily();
+            renderTodos('lukas');
+            renderTodos('michael');
+            setupEventListeners();
+        }
+
+        // Event Listeners
+        function setupEventListeners() {
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    currentPerson = tab.dataset.person;
+                    showCurrentView();
+                });
+            });
+
+            document.querySelectorAll('.view-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentView = btn.dataset.view;
+                    showCurrentView();
+                });
+            });
+        }
+
+        // Aktuelle Ansicht anzeigen
+        function showCurrentView() {
+            document.querySelectorAll('.todo-list, .calendar-view').forEach(el => {
+                el.classList.remove('active');
+            });
+
+            if (currentView === 'today') {
+                document.getElementById(`${currentPerson}-today`).classList.add('active');
+            } else {
+                renderCalendar(currentPerson);
+                document.getElementById(`${currentPerson}-calendar`).classList.add('active');
+            }
+        }
+
+        // To-Dos rendern
+        function renderTodos(person) {
+            const container = document.getElementById(`${person}-todos`);
+            container.innerHTML = '';
+
+            const todayKey = getTodayKey();
+            const todayData = getData(`${person}-${todayKey}`) || {};
+
+            tasks[person].forEach((task, index) => {
+                const isChecked = todayData[index] || false;
+                
+                const div = document.createElement('div');
+                div.className = `todo-item ${isChecked ? 'completed' : ''}`;
+                
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.id = `${person}-task-${index}`;
+                checkbox.checked = isChecked;
+                checkbox.addEventListener('change', () => toggleTask(person, index, checkbox.checked));
+                
+                const label = document.createElement('label');
+                label.htmlFor = `${person}-task-${index}`;
+                label.textContent = task;
+                
+                div.appendChild(checkbox);
+                div.appendChild(label);
+                container.appendChild(div);
+            });
+
+            updateProgress(person);
+        }
+
+        // Aufgabe umschalten
+        function toggleTask(person, index, checked) {
+            const todayKey = getTodayKey();
+            const todayData = getData(`${person}-${todayKey}`) || {};
+
+            todayData[index] = checked;
+            setData(`${person}-${todayKey}`, todayData);
+
+            renderTodos(person);
+        }
+
+        // Fortschritt aktualisieren
+        function updateProgress(person) {
+            const todayKey = getTodayKey();
+            const todayData = getData(`${person}-${todayKey}`) || {};
+
+            const completed = Object.values(todayData).filter(v => v).length;
+            const total = tasks[person].length;
+            const percentage = (completed / total) * 100;
+
+            const progressBar = document.getElementById(`${person}-progress`);
+            progressBar.style.width = `${percentage}%`;
+        }
+
+        // Kalender rendern
+        function renderCalendar(person) {
+            const container = document.getElementById(`${person}-calendar-grid`);
+            container.innerHTML = '';
+
+            const todayKey = getTodayKey();
+            const keys = getAllKeys(`${person}-20`);
+
+            // Sortiere Daten absteigend (neueste zuerst)
+            keys.sort().reverse();
+
+            // Zeige letzte 30 Tage
+            const displayKeys = keys.slice(0, 30);
+
+            if (displayKeys.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #666;">Noch keine Daten vorhanden. Starte mit deinen ersten Aufgaben!</p>';
+                return;
+            }
+
+            displayKeys.forEach(key => {
+                const data = getData(key);
+                const date = key.replace(`${person}-`, '');
+                const completed = Object.values(data).filter(v => v).length;
+                const total = tasks[person].length;
+
+                const div = document.createElement('div');
+                const isToday = date === todayKey;
+                
+                let className = 'calendar-day ';
+                if (completed === total) className += 'complete';
+                else if (completed === 0) className += 'incomplete';
+                else className += 'partial';
+
+                div.className = className;
+                div.innerHTML = `
+                    <div class="date">${formatDate(date)}</div>
+                    <div class="stats">${completed} / ${total} erledigt</div>
+                    ${isToday ? '<div class="today-indicator">HEUTE</div>' : ''}
+                `;
+
+                container.appendChild(div);
+            });
+        }
+
+        // Datum formatieren
+        function formatDate(dateStr) {
+            const [year, month, day] = dateStr.split('-');
+            return `${day}.${month}.${year}`;
+        }
+
+        // Täglicher Reset prüfen
+        function checkAndResetDaily() {
+            const todayKey = getTodayKey();
+            const lastCheck = getData('last-check-date');
+            
+            if (!lastCheck || lastCheck !== todayKey) {
+                setData('last-check-date', todayKey);
+                // Initialisiere leere Daten für heute
+                for (const person of ['lukas', 'michael']) {
+                    if (!getData(`${person}-${todayKey}`)) {
+                        setData(`${person}-${todayKey}`, {});
+                    }
+                }
+            }
+        }
+
+        // App starten wenn DOM geladen ist
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
+    </script>
 </body>
 </html>
