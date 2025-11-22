@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Der Weg zum Business</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .tab-container {
+            display: flex;
+            background: #f5f5f5;
+            border-bottom: 2px solid #ddd;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            font-size: 1.2em;
+            font-weight: bold;
+            transition: all 0.3s;
+            background: #e0e0e0;
+        }
+
+        .tab:hover {
+            background: #d0d0d0;
+        }
+
+        .tab.active {
+            background: white;
+            color: #667eea;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .view-toggle {
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+            gap: 10px;
+        }
+
+        .view-btn {
+            padding: 10px 30px;
+            border: 2px solid #667eea;
+            background: white;
+            color: #667eea;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .view-btn:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .view-btn.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .todo-list {
+            display: none;
+        }
+
+        .todo-list.active {
+            display: block;
+        }
+
+        .todo-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            margin-bottom: 10px;
+            background: #f9f9f9;
+            border-radius: 10px;
+            transition: all 0.3s;
+        }
+
+        .todo-item:hover {
+            background: #f0f0f0;
+            transform: translateX(5px);
+        }
+
+        .todo-item.completed {
+            background: #d4edda;
+        }
+
+        .todo-item input[type="checkbox"] {
+            width: 25px;
+            height: 25px;
+            margin-right: 15px;
+            cursor: pointer;
+        }
+
+        .todo-item label {
+            flex: 1;
+            font-size: 1.1em;
+            cursor: pointer;
+        }
+
+        .calendar-view {
+            display: none;
+        }
+
+        .calendar-view.active {
+            display: block;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .calendar-day {
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .calendar-day.complete {
+            background: #d4edda;
+            border: 2px solid #28a745;
+        }
+
+        .calendar-day.incomplete {
+            background: #f8d7da;
+            border: 2px solid #dc3545;
+        }
+
+        .calendar-day.partial {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+        }
+
+        .date {
+            font-weight: bold;
+            margin-bottom: 5px;
+            font-size: 0.9em;
+        }
+
+        .stats {
+            font-size: 0.8em;
+            color: #666;
+        }
+
+        .today-indicator {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 5px;
+            font-size: 0.7em;
+            margin-top: 5px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: #e0e0e0;
+            border-radius: 5px;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #28a745;
+            transition: width 0.3s;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🚀 Der Weg zum Business</h1>
+            <p>Tägliche Aufgaben für deinen Erfolg</p>
+        </header>
+
+        <div class="tab-container">
+            <div class="tab active" data-person="lukas">Lukas</div>
+            <div class="tab" data-person="michael">Michael</div>
+        </div>
+
+        <div class="view-toggle">
+            <button class="view-btn active" data-view="today">Heute</button>
+            <button class="view-btn" data-view="calendar">Kalender</button>
+        </div>
+
+        <div class="content">
+            <!-- Lukas To-Do Liste -->
+            <div id="lukas-today" class="todo-list active">
+                <h2>Lukas - Heutige Aufgaben</h2>
+                <div id="lukas-todos"></div>
+                <div class="progress-bar">
+                    <div id="lukas-progress" class="progress-fill" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <!-- Michael To-Do Liste -->
+            <div id="michael-today" class="todo-list">
+                <h2>Michael - Heutige Aufgaben</h2>
+                <div id="michael-todos"></div>
+                <div class="progress-bar">
+                    <div id="michael-progress" class="progress-fill" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <!-- Lukas Kalender -->
+            <div id="lukas-calendar" class="calendar-view">
+                <h2>Lukas - Kalender Übersicht</h2>
+                <div id="lukas-calendar-grid" class="calendar-grid"></div>
+            </div>
+
+            <!-- Michael Kalender -->
+            <div id="michael-calendar" class="calendar-view">
+                <h2>Michael - Kalender Übersicht</h2>
+                <div id="michael-calendar-grid" class="calendar-grid"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Aufgaben definieren
+        const tasks = {
+            lukas: [
+                'youtube video hochladen',
+                'youtube short video hochladen',
+                'website checken',
+                'aufgaben erledigen',
+                'wissen erweitern'
+            ],
+            michael: [
+                'youtube video hochladen',
+                'youtube short video hochladen',
+                'wissen erweitern',
+                'crypto investieren/rechachiert',
+                'algemeine probleme lösen'
+            ]
+        };
+
+        let currentPerson = 'lukas';
+        let currentView = 'today';
+
+        // Heutiges Datum
+        function getTodayKey() {
+            const today = new Date();
+            return `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+        }
+
+        // LocalStorage Wrapper
+        function getData(key) {
+            const data = localStorage.getItem(key);
+            return data ? JSON.parse(data) : null;
+        }
+
+        function setData(key, value) {
+            localStorage.setItem(key, JSON.stringify(value));
+        }
+
+        function getAllKeys(prefix) {
+            const keys = [];
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key.startsWith(prefix)) {
+                    keys.push(key);
+                }
+            }
+            return keys;
+        }
+
+        // Initialisierung
+        function init() {
+            checkAndResetDaily();
+            renderTodos('lukas');
+            renderTodos('michael');
+            setupEventListeners();
+        }
+
+        // Event Listeners
+        function setupEventListeners() {
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    currentPerson = tab.dataset.person;
+                    showCurrentView();
+                });
+            });
+
+            document.querySelectorAll('.view-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentView = btn.dataset.view;
+                    showCurrentView();
+                });
+            });
+        }
+
+        // Aktuelle Ansicht anzeigen
+        function showCurrentView() {
+            document.querySelectorAll('.todo-list, .calendar-view').forEach(el => {
+                el.classList.remove('active');
+            });
+
+            if (currentView === 'today') {
+                document.getElementById(`${currentPerson}-today`).classList.add('active');
+            } else {
+                renderCalendar(currentPerson);
+                document.getElementById(`${currentPerson}-calendar`).classList.add('active');
+            }
+        }
+
+        // To-Dos rendern
+        function renderTodos(person) {
+            const container = document.getElementById(`${person}-todos`);
+            container.innerHTML = '';
+
+            const todayKey = getTodayKey();
+            const todayData = getData(`${person}-${todayKey}`) || {};
+
+            tasks[person].forEach((task, index) => {
+                const isChecked = todayData[index] || false;
+                
+                const div = document.createElement('div');
+                div.className = `todo-item ${isChecked ? 'completed' : ''}`;
+                
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.id = `${person}-task-${index}`;
+                checkbox.checked = isChecked;
+                checkbox.addEventListener('change', () => toggleTask(person, index, checkbox.checked));
+                
+                const label = document.createElement('label');
+                label.htmlFor = `${person}-task-${index}`;
+                label.textContent = task;
+                
+                div.appendChild(checkbox);
+                div.appendChild(label);
+                container.appendChild(div);
+            });
+
+            updateProgress(person);
+        }
+
+        // Aufgabe umschalten
+        function toggleTask(person, index, checked) {
+            const todayKey = getTodayKey();
+            const todayData = getData(`${person}-${todayKey}`) || {};
+
+            todayData[index] = checked;
+            setData(`${person}-${todayKey}`, todayData);
+
+            renderTodos(person);
+        }
+
+        // Fortschritt aktualisieren
+        function updateProgress(person) {
+            const todayKey = getTodayKey();
+            const todayData = getData(`${person}-${todayKey}`) || {};
+
+            const completed = Object.values(todayData).filter(v => v).length;
+            const total = tasks[person].length;
+            const percentage = (completed / total) * 100;
+
+            const progressBar = document.getElementById(`${person}-progress`);
+            progressBar.style.width = `${percentage}%`;
+        }
+
+        // Kalender rendern
+        function renderCalendar(person) {
+            const container = document.getElementById(`${person}-calendar-grid`);
+            container.innerHTML = '';
+
+            const todayKey = getTodayKey();
+            const keys = getAllKeys(`${person}-20`);
+
+            // Sortiere Daten absteigend (neueste zuerst)
+            keys.sort().reverse();
+
+            // Zeige letzte 30 Tage
+            const displayKeys = keys.slice(0, 30);
+
+            if (displayKeys.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #666;">Noch keine Daten vorhanden. Starte mit deinen ersten Aufgaben!</p>';
+                return;
+            }
+
+            displayKeys.forEach(key => {
+                const data = getData(key);
+                const date = key.replace(`${person}-`, '');
+                const completed = Object.values(data).filter(v => v).length;
+                const total = tasks[person].length;
+
+                const div = document.createElement('div');
+                const isToday = date === todayKey;
+                
+                let className = 'calendar-day ';
+                if (completed === total) className += 'complete';
+                else if (completed === 0) className += 'incomplete';
+                else className += 'partial';
+
+                div.className = className;
+                div.innerHTML = `
+                    <div class="date">${formatDate(date)}</div>
+                    <div class="stats">${completed} / ${total} erledigt</div>
+                    ${isToday ? '<div class="today-indicator">HEUTE</div>' : ''}
+                `;
+
+                container.appendChild(div);
+            });
+        }
+
+        // Datum formatieren
+        function formatDate(dateStr) {
+            const [year, month, day] = dateStr.split('-');
+            return `${day}.${month}.${year}`;
+        }
+
+        // Täglicher Reset prüfen
+        function checkAndResetDaily() {
+            const todayKey = getTodayKey();
+            const lastCheck = getData('last-check-date');
+            
+            if (!lastCheck || lastCheck !== todayKey) {
+                setData('last-check-date', todayKey);
+                // Initialisiere leere Daten für heute
+                for (const person of ['lukas', 'michael']) {
+                    if (!getData(`${person}-${todayKey}`)) {
+                        setData(`${person}-${todayKey}`, {});
+                    }
+                }
+            }
+        }
+
+        // App starten wenn DOM geladen ist
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
+    </script>
+</body>
+</html>
