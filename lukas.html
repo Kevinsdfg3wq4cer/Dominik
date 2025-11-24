@@ -32,11 +32,31 @@
             color: white;
             padding: 30px;
             text-align: center;
+            position: relative;
         }
 
         h1 {
             font-size: 2.5em;
             margin-bottom: 10px;
+        }
+
+        .logout-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 8px 20px;
+            background: rgba(255,255,255,0.2);
+            border: 2px solid white;
+            color: white;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: white;
+            color: #667eea;
         }
 
         .tab-container {
@@ -215,6 +235,7 @@
 <body>
     <div class="container">
         <header>
+            <button class="logout-btn" onclick="logout()">Abmelden</button>
             <h1>🚀 Der Weg zum Business</h1>
             <p>Tägliche Aufgaben für deinen Erfolg</p>
         </header>
@@ -263,6 +284,43 @@
     </div>
 
     <script>
+        // Schutz: Prüfe ob eingeloggt
+        function checkAuth() {
+            const isLoggedIn = sessionStorage.getItem('auth_logged_in');
+            const timestamp = sessionStorage.getItem('auth_timestamp');
+            
+            // Nicht eingeloggt oder Session abgelaufen (24 Stunden)
+            if (!isLoggedIn || !timestamp) {
+                window.location.href = 'index.html';
+                return false;
+            }
+            
+            const now = Date.now();
+            const sessionAge = now - parseInt(timestamp);
+            const maxAge = 24 * 60 * 60 * 1000; // 24 Stunden
+            
+            if (sessionAge > maxAge) {
+                sessionStorage.clear();
+                window.location.href = 'index.html';
+                return false;
+            }
+            
+            return true;
+        }
+
+        // Logout Funktion
+        function logout() {
+            if (confirm('Möchtest du dich wirklich abmelden?')) {
+                sessionStorage.clear();
+                window.location.href = 'index.html';
+            }
+        }
+
+        // Prüfe Auth beim Laden
+        if (!checkAuth()) {
+            throw new Error('Nicht autorisiert');
+        }
+
         // Aufgaben definieren
         const tasks = {
             lukas: [
