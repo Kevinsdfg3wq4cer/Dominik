@@ -263,6 +263,59 @@
     </div>
 
     <script>
+        // Login-System
+        const LOGIN_CODE = 'lukas09dominik13';
+        let isLoggedIn = sessionStorage.getItem('isLoggedIn') === 'true';
+
+        // Login-Überprüfung beim Start
+        function checkLogin() {
+            if (!isLoggedIn) {
+                showLoginScreen();
+                return false;
+            }
+            return true;
+        }
+
+        function showLoginScreen() {
+            document.querySelector('.container').innerHTML = `
+                <header>
+                    <h1>🔒 Login erforderlich</h1>
+                    <p>Bitte Code eingeben</p>
+                </header>
+                <div class="content" style="text-align: center; padding: 50px;">
+                    <input type="password" id="login-input" placeholder="Code eingeben" 
+                           style="padding: 15px; font-size: 1.2em; border: 2px solid #667eea; border-radius: 10px; width: 300px; max-width: 90%;">
+                    <br><br>
+                    <button id="login-btn" style="padding: 15px 40px; font-size: 1.2em; background: #667eea; color: white; border: none; border-radius: 25px; cursor: pointer;">
+                        Anmelden
+                    </button>
+                    <div id="login-error" style="color: red; margin-top: 20px; display: none;">Falscher Code!</div>
+                </div>
+            `;
+
+            const input = document.getElementById('login-input');
+            const btn = document.getElementById('login-btn');
+            const error = document.getElementById('login-error');
+
+            function attemptLogin() {
+                if (input.value === LOGIN_CODE) {
+                    sessionStorage.setItem('isLoggedIn', 'true');
+                    isLoggedIn = true;
+                    location.reload();
+                } else {
+                    error.style.display = 'block';
+                    input.value = '';
+                    input.focus();
+                }
+            }
+
+            btn.addEventListener('click', attemptLogin);
+            input.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') attemptLogin();
+            });
+            input.focus();
+        }
+
         // Aufgaben definieren
         const tasks = {
             lukas: [
@@ -313,6 +366,8 @@
 
         // Initialisierung
         function init() {
+            if (!checkLogin()) return;
+            
             checkAndResetDaily();
             renderTodos('lukas');
             renderTodos('michael');
