@@ -32,11 +32,31 @@
             color: white;
             padding: 30px;
             text-align: center;
+            position: relative;
         }
 
         h1 {
             font-size: 2.5em;
             margin-bottom: 10px;
+        }
+
+        .logout-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 8px 20px;
+            background: rgba(255,255,255,0.2);
+            border: 2px solid white;
+            color: white;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: white;
+            color: #667eea;
         }
 
         .tab-container {
@@ -215,6 +235,7 @@
 <body>
     <div class="container">
         <header>
+            <button class="logout-btn" onclick="logout()">Abmelden</button>
             <h1>🚀 Der Weg zum Business</h1>
             <p>Tägliche Aufgaben für deinen Erfolg</p>
         </header>
@@ -263,57 +284,41 @@
     </div>
 
     <script>
-        // Login-System
-        const LOGIN_CODE = 'lukas09dominik13';
-        let isLoggedIn = sessionStorage.getItem('isLoggedIn') === 'true';
-
-        // Login-Überprüfung beim Start
-        function checkLogin() {
-            if (!isLoggedIn) {
-                showLoginScreen();
+        // Schutz: Prüfe ob eingeloggt
+        function checkAuth() {
+            const isLoggedIn = sessionStorage.getItem('auth_logged_in');
+            const timestamp = sessionStorage.getItem('auth_timestamp');
+            
+            // Nicht eingeloggt oder Session abgelaufen (24 Stunden)
+            if (!isLoggedIn || !timestamp) {
+                window.location.href = 'index.html';
                 return false;
             }
+            
+            const now = Date.now();
+            const sessionAge = now - parseInt(timestamp);
+            const maxAge = 24 * 60 * 60 * 1000; // 24 Stunden
+            
+            if (sessionAge > maxAge) {
+                sessionStorage.clear();
+                window.location.href = 'index.html';
+                return false;
+            }
+            
             return true;
         }
 
-        function showLoginScreen() {
-            document.querySelector('.container').innerHTML = `
-                <header>
-                    <h1>🔒 Login erforderlich</h1>
-                    <p>Bitte Code eingeben</p>
-                </header>
-                <div class="content" style="text-align: center; padding: 50px;">
-                    <input type="password" id="login-input" placeholder="Code eingeben" 
-                           style="padding: 15px; font-size: 1.2em; border: 2px solid #667eea; border-radius: 10px; width: 300px; max-width: 90%;">
-                    <br><br>
-                    <button id="login-btn" style="padding: 15px 40px; font-size: 1.2em; background: #667eea; color: white; border: none; border-radius: 25px; cursor: pointer;">
-                        Anmelden
-                    </button>
-                    <div id="login-error" style="color: red; margin-top: 20px; display: none;">Falscher Code!</div>
-                </div>
-            `;
-
-            const input = document.getElementById('login-input');
-            const btn = document.getElementById('login-btn');
-            const error = document.getElementById('login-error');
-
-            function attemptLogin() {
-                if (input.value === LOGIN_CODE) {
-                    sessionStorage.setItem('isLoggedIn', 'true');
-                    isLoggedIn = true;
-                    location.reload();
-                } else {
-                    error.style.display = 'block';
-                    input.value = '';
-                    input.focus();
-                }
+        // Logout Funktion
+        function logout() {
+            if (confirm('Möchtest du dich wirklich abmelden?')) {
+                sessionStorage.clear();
+                window.location.href = 'index.html';
             }
+        }
 
-            btn.addEventListener('click', attemptLogin);
-            input.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') attemptLogin();
-            });
-            input.focus();
+        // Prüfe Auth beim Laden
+        if (!checkAuth()) {
+            throw new Error('Nicht autorisiert');
         }
 
         // Aufgaben definieren
@@ -366,8 +371,6 @@
 
         // Initialisierung
         function init() {
-            if (!checkLogin()) return;
-            
             checkAndResetDaily();
             renderTodos('lukas');
             renderTodos('michael');
@@ -537,6 +540,183 @@
         } else {
             init();
         }
+    </script>
+</body>
+</html><!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Der Weg zum Business</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .login-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            padding: 50px;
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .logo {
+            font-size: 4em;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            color: #667eea;
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        p {
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        input[type="password"] {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.1em;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            transition: all 0.3s;
+            outline: none;
+        }
+
+        input[type="password"]:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.2em;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .error-message {
+            color: #dc3545;
+            background: #f8d7da;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 15px;
+            display: none;
+            animation: shake 0.5s;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .footer {
+            margin-top: 30px;
+            color: #999;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="logo">🚀</div>
+        <h1>Willkommen</h1>
+        <p>Bitte gib den Zugangs-Code ein</p>
+        
+        <form id="loginForm">
+            <div class="input-group">
+                <input 
+                    type="password" 
+                    id="password" 
+                    placeholder="Zugangs-Code eingeben"
+                    autocomplete="off"
+                    required
+                >
+            </div>
+            <button type="submit">Anmelden</button>
+        </form>
+        
+        <div id="errorMessage" class="error-message">
+            ❌ Falscher Code! Bitte versuche es erneut.
+        </div>
+        
+        <div class="footer">
+            Der Weg zum Business 2024
+        </div>
+    </div>
+
+    <script>
+        const LOGIN_CODE = 'lukas09dominik13';
+        const errorMessage = document.getElementById('errorMessage');
+        const passwordInput = document.getElementById('password');
+
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const enteredCode = passwordInput.value;
+            
+            if (enteredCode === LOGIN_CODE) {
+                // Erfolgreicher Login
+                sessionStorage.setItem('auth_logged_in', 'true');
+                sessionStorage.setItem('auth_timestamp', Date.now());
+                window.location.href = 'app.html';
+            } else {
+                // Fehlgeschlagener Login
+                errorMessage.classList.add('show');
+                passwordInput.value = '';
+                passwordInput.focus();
+                
+                // Fehler nach 3 Sekunden ausblenden
+                setTimeout(() => {
+                    errorMessage.classList.remove('show');
+                }, 3000);
+            }
+        });
+
+        // Fokus auf Input beim Laden
+        passwordInput.focus();
     </script>
 </body>
 </html>
