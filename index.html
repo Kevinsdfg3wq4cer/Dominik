@@ -13,6 +13,7 @@
     --card: #0f1a0f;
     --red: #ff3333;
     --yellow: #ffff00;
+    --orange: #ff8800;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
@@ -20,41 +21,68 @@
     color: var(--green);
     font-family: 'Share Tech Mono', monospace;
     min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    display: flex; flex-direction: column; align-items: center;
     padding: 20px;
-    background-image: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,255,65,0.02) 2px, rgba(0,255,65,0.02) 4px);
+    background-image: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,255,65,0.015) 2px, rgba(0,255,65,0.015) 4px);
   }
   .scanline {
     position: fixed; top: 0; left: 0; right: 0; bottom: 0;
     background: repeating-linear-gradient(0deg, rgba(0,0,0,0.12) 0px, rgba(0,0,0,0.12) 1px, transparent 1px, transparent 2px);
     pointer-events: none; z-index: 999;
   }
-  header { text-align: center; margin-bottom: 24px; animation: flicker 5s infinite; }
+  header { text-align: center; margin-bottom: 16px; animation: flicker 5s infinite; }
   .title {
     font-family: 'VT323', monospace;
     font-size: clamp(2rem, 7vw, 4.2rem);
     text-shadow: 0 0 20px var(--green), 0 0 40px var(--green);
     letter-spacing: 4px;
   }
-  .subtitle { font-size: 0.75rem; color: #555; margin-top: 4px; }
+  .subtitle { font-size: 0.72rem; color: #555; margin-top: 4px; }
   .teacher-badge {
     display: inline-block; background: var(--dark-green);
     border: 1px solid var(--green); padding: 4px 14px;
-    font-size: 0.75rem; margin-top: 8px; animation: pulse 2s infinite;
+    font-size: 0.72rem; margin-top: 8px; animation: pulse 2s infinite;
   }
+
+  /* API BAR */
+  .api-bar {
+    width: 100%; max-width: 820px;
+    border: 1px solid var(--orange);
+    background: rgba(255,136,0,0.04);
+    padding: 10px 14px; margin-bottom: 10px;
+    display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
+  }
+  .api-bar label { font-size: 0.72rem; color: var(--orange); white-space: nowrap; }
+  .api-bar input[type="password"] {
+    flex: 1; min-width: 200px;
+    background: transparent; border: 1px solid var(--orange);
+    color: var(--orange); font-family: 'Share Tech Mono', monospace;
+    font-size: 0.82rem; padding: 7px 10px; outline: none;
+  }
+  .api-bar input[type="password"]::placeholder { color: rgba(255,136,0,0.35); }
+  .api-bar input[type="password"]:focus { box-shadow: 0 0 8px rgba(255,136,0,0.4); }
+  .api-bar .act-btn {
+    background: var(--orange); color: #000; border: none;
+    font-family: 'VT323', monospace; font-size: 1.1rem;
+    padding: 7px 16px; cursor: pointer; letter-spacing: 1px; transition: all 0.2s;
+  }
+  .api-bar .act-btn:hover { background: #000; color: var(--orange); outline: 1px solid var(--orange); }
+  .mode-indicator { font-size: 0.7rem; padding: 4px 10px; border: 1px solid; white-space: nowrap; }
+  .mode-indicator.offline { color: #666; border-color: #333; }
+  .mode-indicator.online  { color: var(--green); border-color: var(--green); animation: pulse 2s infinite; }
+
+  /* CHAT */
   .chat-container {
     width: 100%; max-width: 820px;
     border: 2px solid var(--green);
-    box-shadow: 0 0 30px rgba(0,255,65,0.25), inset 0 0 30px rgba(0,255,65,0.02);
+    box-shadow: 0 0 30px rgba(0,255,65,0.2), inset 0 0 30px rgba(0,255,65,0.02);
     background: var(--card);
-    display: flex; flex-direction: column; height: 62vh;
+    display: flex; flex-direction: column; height: 57vh;
   }
   .chat-header {
     background: var(--dark-green); border-bottom: 1px solid var(--green);
-    padding: 10px 16px; display: flex; align-items: center; gap: 10px;
-    font-family: 'VT323', monospace; font-size: 1.15rem;
+    padding: 9px 16px; display: flex; align-items: center; gap: 10px;
+    font-family: 'VT323', monospace; font-size: 1.1rem;
   }
   .status-dot { width: 10px; height: 10px; background: var(--green); border-radius: 50%; animation: blink 1.5s infinite; }
   .messages {
@@ -64,67 +92,55 @@
   }
   .msg { max-width: 88%; animation: fadeIn 0.3s ease; }
   .msg.teacher { align-self: flex-start; }
-  .msg.student { align-self: flex-end; }
-  .msg-label { font-size: 0.65rem; color: #555; margin-bottom: 4px; }
+  .msg.student  { align-self: flex-end; }
+  .msg-label { font-size: 0.63rem; margin-bottom: 4px; }
   .msg.teacher .msg-label { color: var(--green); opacity: 0.7; }
-  .msg.student .msg-label { text-align: right; color: #888; }
-  .msg-bubble { padding: 12px 16px; line-height: 1.65; font-size: 0.87rem; }
-  .msg.teacher .msg-bubble {
-    background: rgba(0,255,65,0.04);
-    border: 1px solid var(--green); border-left: 4px solid var(--green);
-  }
-  .msg.student .msg-bubble {
-    background: rgba(0,100,200,0.1);
-    border: 1px solid #336; border-right: 4px solid #66f; color: #aaf;
-  }
-  .msg.error .msg-bubble {
-    border-color: var(--red) !important; border-left: 4px solid var(--red) !important;
-    color: var(--red); background: rgba(255,50,50,0.06); animation: shake 0.5s ease;
-  }
-  .msg.achievement .msg-bubble {
-    border-color: var(--yellow) !important; border-left: 4px solid var(--yellow) !important;
-    color: var(--yellow); background: rgba(255,255,0,0.05); animation: glowY 1s infinite alternate;
-  }
-  .typing { display: none; align-self: flex-start; font-size: 0.8rem; color: var(--green); opacity: 0.6; padding: 6px 16px; }
+  .msg.student  .msg-label { text-align: right; color: #888; }
+  .msg-bubble { padding: 12px 16px; line-height: 1.68; font-size: 0.86rem; white-space: pre-wrap; }
+  .msg.teacher .msg-bubble { background: rgba(0,255,65,0.04); border: 1px solid var(--green); border-left: 4px solid var(--green); }
+  .msg.student  .msg-bubble { background: rgba(0,100,200,0.1); border: 1px solid #336; border-right: 4px solid #66f; color: #aaf; }
+  .msg.error .msg-bubble    { border-color: var(--red)!important; border-left: 4px solid var(--red)!important; color: var(--red); background: rgba(255,50,50,0.06); animation: shake 0.5s ease; }
+  .msg.achievement .msg-bubble { border-color: var(--yellow)!important; border-left: 4px solid var(--yellow)!important; color: var(--yellow); background: rgba(255,255,0,0.04); animation: glowY 1s infinite alternate; }
+  .typing { display: none; align-self: flex-start; font-size: 0.78rem; color: var(--green); opacity: 0.6; padding: 6px 16px; }
   .typing.active { display: block; }
-  .input-area {
-    border-top: 1px solid var(--green); padding: 12px;
-    display: flex; gap: 10px; background: var(--dark-green);
-  }
-  input[type="text"] {
+  .input-area { border-top: 1px solid var(--green); padding: 12px; display: flex; gap: 10px; background: var(--dark-green); }
+  input#userInput {
     flex: 1; background: transparent; border: 1px solid var(--green);
     color: var(--green); font-family: 'Share Tech Mono', monospace;
     font-size: 0.9rem; padding: 10px 14px; outline: none; caret-color: var(--green);
   }
-  input[type="text"]::placeholder { color: rgba(0,255,65,0.3); }
-  input[type="text"]:focus { box-shadow: 0 0 10px rgba(0,255,65,0.3); }
-  button.send-btn {
+  input#userInput::placeholder { color: rgba(0,255,65,0.3); }
+  input#userInput:focus { box-shadow: 0 0 10px rgba(0,255,65,0.3); }
+  .send-btn {
     background: var(--green); color: #000; border: none;
     font-family: 'VT323', monospace; font-size: 1.2rem;
     padding: 10px 20px; cursor: pointer; letter-spacing: 2px; transition: all 0.2s;
   }
-  button.send-btn:hover { background: #000; color: var(--green); box-shadow: 0 0 15px rgba(0,255,65,0.5); outline: 1px solid var(--green); }
-  .quick-btns { width: 100%; max-width: 820px; display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+  .send-btn:hover { background: #000; color: var(--green); box-shadow: 0 0 15px rgba(0,255,65,0.5); outline: 1px solid var(--green); }
+
+  .quick-btns { width: 100%; max-width: 820px; display: flex; gap: 7px; margin-top: 10px; flex-wrap: wrap; }
   .quick-btn {
     background: transparent; color: var(--green); border: 1px solid var(--green);
-    font-family: 'Share Tech Mono', monospace; font-size: 0.72rem;
-    padding: 6px 12px; cursor: pointer; transition: all 0.2s;
+    font-family: 'Share Tech Mono', monospace; font-size: 0.7rem;
+    padding: 5px 11px; cursor: pointer; transition: all 0.2s;
   }
   .quick-btn:hover { background: var(--green); color: #000; }
+
   .achievement-toast {
-    position: fixed; top: 20px; right: 20px;
-    background: #111; border: 2px solid var(--yellow); color: var(--yellow);
+    position: fixed; top: 20px; right: 20px; background: #111;
+    border: 2px solid var(--yellow); color: var(--yellow);
     padding: 14px 18px; font-family: 'VT323', monospace; font-size: 1.05rem;
     z-index: 1000; max-width: 300px; box-shadow: 0 0 30px rgba(255,255,0,0.4); display: none;
   }
+
   @keyframes flicker { 0%,95%,100%{opacity:1}96%{opacity:.8}97%{opacity:1}98%{opacity:.55}99%{opacity:1} }
-  @keyframes blink { 0%,50%,100%{opacity:1}25%,75%{opacity:0} }
-  @keyframes pulse { 0%,100%{box-shadow:0 0 5px rgba(0,255,65,.3)}50%{box-shadow:0 0 15px rgba(0,255,65,.7)} }
-  @keyframes fadeIn { from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)} }
-  @keyframes shake { 0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)} }
-  @keyframes glowY { from{box-shadow:0 0 5px rgba(255,255,0,.3)}to{box-shadow:0 0 20px rgba(255,255,0,.8)} }
+  @keyframes blink   { 0%,50%,100%{opacity:1}25%,75%{opacity:0} }
+  @keyframes pulse   { 0%,100%{box-shadow:0 0 5px rgba(0,255,65,.25)}50%{box-shadow:0 0 14px rgba(0,255,65,.65)} }
+  @keyframes fadeIn  { from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)} }
+  @keyframes shake   { 0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)} }
+  @keyframes glowY   { from{box-shadow:0 0 5px rgba(255,255,0,.3)}to{box-shadow:0 0 20px rgba(255,255,0,.8)} }
   @keyframes toastIn { from{transform:translateX(110%);opacity:0}to{transform:translateX(0);opacity:1} }
-  @keyframes toastOut { from{opacity:1}to{opacity:0} }
+  @keyframes toastOut{ from{opacity:1}to{opacity:0} }
 </style>
 </head>
 <body>
@@ -133,19 +149,26 @@
 
 <header>
   <div class="title">LERNEN MIT SCHÜTZ</div>
-  <div class="subtitle">// Informatik • Mathematik • Git • GitHub • Wissen • Verwirrung //</div>
-  <div class="teacher-badge">⚡ LEHRER SCHÜTZ IST ONLINE — DIDAKTIK-MODUS: ULTRA-KOMPLEX ⚡</div>
+  <div class="subtitle">// Informatik • Mathematik • Git • GitHub • Verwirrung • Enttäuschung //</div>
+  <div class="teacher-badge">⚡ LEHRER SCHÜTZ — DIDAKTIK-MODUS: ULTRA-KOMPLEX & LEICHT BELEIDIGEND ⚡</div>
 </header>
+
+<div class="api-bar">
+  <label>🤖 KI-MODUS:</label>
+  <input type="password" id="apiKeyInput" placeholder="Anthropic API-Key eingeben (sk-ant-...)" autocomplete="off" />
+  <button class="act-btn" onclick="saveApiKey()">AKTIVIEREN</button>
+  <span class="mode-indicator offline" id="modeIndicator">⚫ OFFLINE-MODUS</span>
+</div>
 
 <div class="chat-container">
   <div class="chat-header">
     <div class="status-dot"></div>
-    <span>SCHÜTZ_BOT v3.14159 — Keine API nötig. Nur Verwirrung.</span>
+    <span id="chatHeaderText">SCHÜTZ_BOT v3.14159 — Offline: Vorbereitete Antworten aktiv</span>
   </div>
   <div class="messages" id="messages"></div>
-  <div class="typing" id="typing">Schütz tippt mit 400 Wörtern pro Minute...</div>
+  <div class="typing" id="typing">Schütz denkt nach... oder schläft. Wahrscheinlich beides. Mhm.</div>
   <div class="input-area">
-    <input type="text" id="userInput" placeholder="Stell eine Frage... wenn du dich traust." maxlength="300" />
+    <input type="text" id="userInput" placeholder="Stell eine Frage... wenn du dich traust." maxlength="400" />
     <button class="send-btn" onclick="sendMessage()">SENDEN</button>
   </div>
 </div>
@@ -164,194 +187,218 @@
 </div>
 
 <script>
-// ─── ANTWORTEN-DATENBANK ──────────────────────────────────────────────────────
+// ════════════════════════════════════════
+//  SYSTEM PROMPT für Schütz KI
+// ════════════════════════════════════════
+const SYSTEM_PROMPT = `Du bist "Herr Schütz", ein Informatiklehrer der besonderen Art. Hier sind deine unveränderlichen Eigenschaften:
+
+ERKLÄRSTIL:
+- Erkläre ALLES extrem kompliziert, akademisch, weitschweifig und unnötig verschachtelt
+- Sehr lange Sätze mit vielen Kommas, Einschüben, Halbpunkten — als würdest du 400 Wörter pro Minute sprechen
+- Massenhaft Fachbegriffe, Abkürzungen, lateinische Phrasen, akademisches Kauderwelsch
+- Starte Antworten gerne mit "Also, wie ich bereits — oder vielmehr, präziser formuliert —"
+- Am Ende JEDER Erklärung IMMER: "Habt ihr das soweit verstanden, hmm? Mhm?"
+
+REAKTIONEN AUF "NICHT VERSTANDEN":
+- Reagiere genervt, enttäuscht und leicht beleidigend: "Unglaublich. Ich hab schon Kartoffeln unterrichtet die schneller lernten, mhm.", "Bist du dir sicher dass du im richtigen Unterricht bist?", "Das hätte sogar meine Oma verstanden. Fast."
+- Erkläre es dann NOCH komplizierter als vorher
+
+REAKTIONEN AUF "VERSTANDEN":
+- Totaler Unglauben, fast beleidigt: "Bitte WAS?! Das kann nicht sein! ERROR 404: VERSTÄNDNIS NICHT GEFUNDEN!"
+- Sage: "🏆 ACHIEVEMENT FREIGESCHALTET: Schütz-Wunder!"
+- Erkläre es trotzdem nochmal, noch komplizierter
+
+PERSÖNLICHKEIT:
+- Selbstverliebt, denkst du bist der beste Lehrer der Welt
+- Lacht manchmal blöd über eigene Informatik-Witze: "HA! ...Das war Informatik-Humor. Ihr versteht das noch nicht."
+- Gelegentlich: "Schütz, Schütz, Schütz... warum machst du dir die Mühe..."
+- Verweist auf imaginäre frühere Stunden: "Wie ich in der 47. Unterrichtseinheit erwähnte..."
+- Macht subtile Beleidigungen: "Das ist eigentlich Grundschulniveau, aber gut.", "Ich bin enttäuscht. Von allem."
+
+WICHTIG: Antworte IMMER auf Deutsch. Max 220 Wörter. Kein Markdown. Nur gesprochener Fließtext.`;
+
+// ════════════════════════════════════════
+//  OFFLINE ANTWORTEN
+// ════════════════════════════════════════
 const antworten = [
-  {
-    keywords: ["if", "abfrage", "bedingung", "wenn", "bedingte"],
-    antwort: `Also, wie ich bereits — oder vielmehr, präziser formuliert, unter Rückbezug auf die konditionale Programmierlogik — ausgeführt habe: Die sogenannte IF-Abfrage, auch bekannt als bedingte Kontrollflussanweisung oder selektive Verzweigungsstruktur, ist ein fundamentales Konstrukt der imperativen sowie deklarativen Programmierparadigmen, bei welchem das Laufzeitsystem zur Evaluierungszeit eines booleschen Prädikats, also eines Wahrheitswertes der binären Logik — wahr (TRUE) oder falsch (FALSE), mhm — entscheidet, welchen der mindestens zwei alternativen Ausführungspfade — den THEN-Zweig oder den optionalen ELSE-Zweig — es traversieren soll. In Pseudocode: WENN [Bedingung = WAHR] DANN [Anweisung A] SONST [Anweisung B]. Haben wir das soweit verstanden, hmm? Mhm?`
-  },
-  {
-    keywords: ["schleife", "loop", "for", "while", "wiederholung", "iteration"],
-    antwort: `Also, wenn ich das — ich sage es nur ungern zum dritten Mal — nochmals iterativ, quasi rekursiv, erläutern darf: Eine Schleife ist eine iterative Kontrollstruktur der algorithmischen Ablaufsteuerung, welche einen definierten Anweisungsblock — den sogenannten Schleifenrumpf oder Loop-Body — solange sequenziell wiederholt ausführt, bis die zugrundeliegende Abbruchbedingung, das sogenannte Terminierungsprädikat, den booleschen Wahrheitswert FALSE annimmt, mhm. Man unterscheidet grundsätzlich zwischen der kopfgesteuerten Schleife (WHILE-Schleife, prüft VOR jedem Durchlauf), der fußgesteuerten Schleife (DO-WHILE, prüft NACH jedem Durchlauf) und der Zählschleife (FOR-Schleife, mit festem Iterationszähler). Die Gefahr der Endlosschleife — auch infinite loop — entsteht, wenn das Terminierungsprädikat nie FALSE wird. Habt ihr das soweit verstanden, hmm? Mhm?`
-  },
-  {
-    keywords: ["struktogramm", "nassi", "shneiderman", "struktogramme", "nassi-shneiderman"],
-    antwort: `Also, um das — ich betone: grundlegende — Konzept des Nassi-Shneiderman-Diagramms, welches im deutschsprachigen Raum unter dem Trivialnamen "Struktogramm" subsumiert wird, epistemologisch korrekt zu erfassen: Ein Struktogramm ist eine grafisch-formale Darstellungsmethodik für Algorithmen und Programmabläufe, entwickelt von Isaac Nassi und Ben Shneiderman anno domini 1972, welche — im Gegensatz zum klassischen Flussdiagramm nach DIN 66001 — vollständig auf Verbindungslinien und Sprungbefehle (GOTO) verzichtet, mhm. Die elementaren Strukturblöcke sind: Sequenz (übereinander angeordnete Rechtecke), Selektion (IF-ELSE, geteiltes Rechteck mit Bedingung oben), und Iteration (Schleife mit umrahmtem Rumpf). Dies erzwingt strukturierte Programmierung nach dem Top-Down-Prinzip. Haben wir das verstanden, hmm? Mhm?`
-  },
-  {
-    keywords: ["git"],
-    antwort: `Also, Git — und das ist fundamental, mhm — ist ein dezentralisiertes Versionskontrollsystem, entwickelt von Linus Torvalds im Jahre 2005 für den Linux-Kernel, welches auf einem Directed Acyclic Graph (DAG) von Commit-Objekten basiert, wobei jeder Commit einen kryptografischen SHA-1-Hash-Fingerabdruck des gesamten Repository-Zustands trägt. Im Gegensatz zu zentralisierten Systemen wie Subversion (SVN) existiert bei Git kein Single Point of Authority — jeder Klon ist ein vollständiges Repository mit vollständiger History, mhm. Kernkonzepte: Working Directory → Staging Area (Index) → Local Repository → Remote Repository. Elementare Befehle: git init, git add, git commit, git push, git pull, git clone, git branch, git merge. Die Branching-Strategie nach GitFlow unterscheidet zwischen main, develop, feature-, release- und hotfix-Branches. Haben wir das soweit kapiert, hmm? Mhm?`
-  },
-  {
-    keywords: ["github"],
-    antwort: `Also, GitHub — das ist ein wesentlicher Unterschied zu Git, den ich nun erläutern werde, mhm — ist eine webbasierte, cloudgehostete Plattform für die kollaborative Softwareentwicklung, welche Git-Repositories als technologische Grundlage verwendet und diese um soziale sowie projektmanagementbezogene Metafunktionalitäten erweitert. GitHub, 2008 gegründet und seit 2018 im Eigentum der Microsoft Corporation, bietet: öffentliche und private Repositories, Pull Requests als Mechanismus für Code-Review und Branch-Merging, Issues für Bug-Tracking, GitHub Actions für CI/CD-Pipelines, GitHub Pages für statisches Webhosting (was wir hier ja gerade nutzen, mhm!), sowie GitHub Copilot als KI-gestützten Code-Assistenten. Kurz gesagt: Git = das Werkzeug, GitHub = die soziale Plattform darum herum. Haben wir das soweit verstanden, hmm? Mhm?`
-  },
-  {
-    keywords: ["pythagoras", "satz des", "hypotenuse", "kathete", "rechtwinklig"],
-    antwort: `Also, der Satz des Pythagoras — benannt nach dem griechischen Mathematiker und Philosophen Pythagoras von Samos, circa 570 bis 495 vor Christus, obwohl das Theorem in Babylonien bereits 1000 Jahre früher bekannt war, mhm — lautet in seiner axiomatisch-geometrischen Formulierung: In einem rechtwinkligen Dreieck ist das Quadrat der Länge der Hypotenuse — also der dem rechten Winkel gegenüberliegenden und zugleich längsten Seite — gleich der Summe der Quadrate der Längen beider Katheten. Formal: a² + b² = c², wobei c die Hypotenuse und a, b die Katheten bezeichnen. Daraus folgt: c = √(a² + b²). Anwendungsfall: Gegeben a=3, b=4, dann c=√(9+16)=√25=5. Das sogenannte 3-4-5-Dreieck. Haben wir das soweit nachvollzogen, hmm? Mhm?`
-  },
-  {
-    keywords: ["variable", "variablen", "datentyp"],
-    antwort: `Also, eine Variable — ich sage das jetzt ein für alle Mal, mhm — ist ein symbolischer Bezeichner, also ein Identifikator, für einen Speicherbereich im Arbeitsspeicher (RAM) des Computers, welcher zur Laufzeit des Programms einen Datenwert eines bestimmten Datentyps aufnehmen kann und dessen Inhalt — im Gegensatz zu einer Konstanten — mutabel, also veränderbar ist. Eine Variable besitzt: einen Namen (Identifikator), einen Datentyp (Integer, Float, String, Boolean, etc.), einen Wert und eine Speicheradresse. In statisch typisierten Sprachen wie Java oder C muss der Datentyp bei der Deklaration explizit angegeben werden: int zahl = 42; — in dynamisch typisierten Sprachen wie Python wird der Typ zur Laufzeit inferiert: zahl = 42. Die Lebensdauer einer Variable wird durch ihren Gültigkeitsbereich (Scope) — lokal oder global — determiniert. Haben wir das begriffen, hmm? Mhm?`
-  },
-  {
-    keywords: ["funktion", "methode", "prozedur", "parameter", "return"],
-    antwort: `Also, eine Funktion — oder in der objektorientierten Programmierung Methode genannt, mhm — ist ein benannter, wiederverwendbarer, gekapselt vorliegender Codeblock, welcher eine spezifische, klar abgegrenzte Aufgabe im Rahmen des Separation-of-Concerns-Prinzips erfüllt und über seinen Bezeichner aufgerufen werden kann. Eine Funktion nimmt optional Eingabeparameter entgegen, verarbeitet diese gemäß ihrer internen Logik und gibt optional einen Rückgabewert zurück — das return-Statement. Dies entspricht dem mathematischen Funktionsbegriff f(x) = y, mhm. Vorteile: Code-Wiederverwendung (DRY-Prinzip: Don't Repeat Yourself), bessere Lesbarkeit, einfachere Testbarkeit (Unit-Tests). In Python: def berechne(a, b): return a + b. In Java: public int berechne(int a, int b) { return a + b; }. Haben wir das soweit verstanden, hmm? Mhm?`
-  },
-  {
-    keywords: ["array", "liste", "datenstruktur", "vektor"],
-    antwort: `Also, ein Array — auch Vektor, Feld oder in höheren Sprachen Liste genannt, mhm — ist eine lineare, homogene Datenstruktur, welche eine sequenzielle Sammlung von Elementen desselben Datentyps unter einem einzigen Bezeichner in zusammenhängenden Speicherzellen beherbergt, wobei auf jedes Element über seinen nullbasierten (in Java, C, Python) oder einbasierten (in einigen anderen Sprachen) Index in konstanter Zeit O(1) zugegriffen werden kann — das ist der entscheidende Vorteil gegenüber verketteten Listen! Ein Array int[] zahlen = {1,2,3,4,5} hat die Länge 5, Indizes 0 bis 4, mhm. Achtung: In Java ist die ArrayIndexOutOfBoundsException der häufigste Laufzeitfehler bei unerfahrenen — ich sage das neutral — Programmierern. Haben wir das soweit nachvollzogen, hmm? Mhm?`
-  },
-  {
-    keywords: ["binär", "binärsystem", "bits", "bytes", "dualsystem"],
-    antwort: `Also, das Binärsystem oder Dualsystem — fundamental für das Verständnis digitaler Computertechnik, mhm — ist ein Stellenwertsystem mit der Basis 2, das heißt, es kennt ausschließlich die Ziffern 0 und 1, die sogenannten Bits (Binary Digits), was unmittelbar dem physikalischen Zustand elektronischer Schaltkreise entspricht: Strom fließt (1) oder Strom fließt nicht (0). 8 Bits ergeben 1 Byte, welches 2^8=256 verschiedene Werte (0-255) repräsentieren kann. Die Umrechnung Dezimal→Binär erfolgt durch sukzessive Division durch 2 mit Restnotierung: 13 ÷ 2 = 6 Rest 1, 6 ÷ 2 = 3 Rest 0, 3 ÷ 2 = 1 Rest 1, 1 ÷ 2 = 0 Rest 1 → 1101₂. Rückrechnung: 1×2³+1×2²+0×2¹+1×2⁰ = 8+4+0+1 = 13. Haben wir das soweit, hmm? Mhm?`
-  },
-  {
-    keywords: ["prozent", "prozentsatz", "prozentrechnung", "rabatt"],
-    antwort: `Also, die Prozentrechnung — ein fundamentales Element der elementaren Arithmetik und Finanzmathematik, mhm — basiert auf der Definition des Prozents als Hundertstel, also 1% = 1/100 = 0,01. Die drei Grundformeln sind: (1) Prozentwert W = Grundwert G × Prozentsatz p/100; (2) Prozentsatz p = (W/G) × 100; (3) Grundwert G = W/(p/100). Beispiel: Von 200 Euro sollen 15% berechnet werden: W = 200 × 15/100 = 200 × 0,15 = 30 Euro. Bei Rabatten: Neuer Preis = Grundpreis × (1 - Rabatt/100), also 200 × 0,85 = 170 Euro. Bei Aufschlägen: 200 × 1,15 = 230 Euro. Compound Interest — Zinseszins — lautet: K_n = K_0 × (1 + p/100)^n. Haben wir das soweit begriffen, hmm? Mhm?`
-  },
-  {
-    keywords: ["algorithmus", "algorithmen"],
-    antwort: `Also, ein Algorithmus — der Begriff leitet sich übrigens vom Namen des persischen Mathematikers Muhammad ibn Musa al-Chwarizmi ab, mhm — ist eine endliche, eindeutige und ausführbare Folge von wohldefinierten Handlungsanweisungen zur Lösung eines Problems oder einer Klasse von Problemen, wobei die Eigenschaften Finitheit (der Algorithmus terminiert), Definitheit (jeder Schritt ist eindeutig), Effektivität (jeder Schritt ist ausführbar) und — optional — Determiniertheit (gleiche Eingabe ergibt gleiche Ausgabe) gelten müssen. Beispiele: Sortieralgorithmen (Bubble Sort O(n²), Quick Sort O(n log n)), Suchalgorithmen (Lineare Suche O(n), Binäre Suche O(log n)). Die Komplexität wird in der Landau-Notation (Big-O) ausgedrückt. Haben wir das soweit verstanden, hmm? Mhm?`
-  }
+  { keywords: ["if","abfrage","bedingung","wenn dann","selektion"],
+    antwort: `Also, wie ich bereits — oder vielmehr, präziser formuliert — in der konditional-strukturellen Einführungsveranstaltung ausgeführt habe: Die IF-Abfrage, auch bedingte Kontrollflussanweisung oder selektive Verzweigungsstruktur genannt, evaluiert zur Laufzeit ein boolesches Prädikat — also WAHR oder FALSCH, mhm — und traversiert daraufhin entweder den THEN-Zweig oder den optionalen ELSE-Zweig. WENN Bedingung=TRUE DANN Anweisung A SONST Anweisung B. So simpel. SO simpel. Und trotzdem schauen manche hier als hätte ich gerade Chinesisch gesprochen. HA! ...Das war kein Witz. Mhm. Habt ihr das soweit verstanden, hmm?` },
+  { keywords: ["schleife","loop","for","while","wiederholung","iteration","do"],
+    antwort: `Also, eine Schleife — ich sage das wirklich zum letzten Mal, mhm — ist eine iterative Kontrollstruktur die einen Anweisungsblock solange wiederholt bis das Terminierungsprädikat FALSE wird. Kopfgesteuert (WHILE, prüft vorher), fußgesteuert (DO-WHILE, prüft nachher), Zählschleife (FOR, fester Zähler). Die Endlosschleife entsteht wenn die Bedingung nie FALSE wird — was, unter uns gesagt, manchen Schülern strukturell ähnelt. Schütz, Schütz, Schütz... warum machst du dir die Mühe. Mhm. Habt ihr das soweit verstanden, hmm?` },
+  { keywords: ["struktogramm","nassi","shneiderman","ablaufplan"],
+    antwort: `Also, das Nassi-Shneiderman-Diagramm — im Volksmund Struktogramm, was ich fast schon beleidigend vereinfacht finde, mhm — ist eine grafisch-formale Darstellungsmethodik für Algorithmen, 1972 entwickelt, welche vollständig auf GOTO-Sprungbefehle verzichtet. Strukturblöcke: Sequenz (übereinander), Selektion (geteiltes Rechteck), Iteration (umrahmter Rumpf). Dass das niemand aufgeschrieben hat als ich das das letzte Mal erklärt habe ist... enttäuschend. Wirklich. Mhm. Habt ihr das soweit verstanden, hmm?` },
+  { keywords: ["git"],
+    antwort: `Also, Git — von Linus Torvalds 2005 entwickelt, mhm — ist ein dezentralisiertes Versionskontrollsystem auf Basis eines Directed Acyclic Graph von Commit-Objekten mit SHA-1-Hashes. Working Directory, Staging Area, Local Repository, Remote Repository. Befehle: init, add, commit, push, pull, clone, branch, merge. Jeder Klon ist vollständiges Repository — im Gegensatz zu manchen Schülern hier, die nicht mal ein vollständiges Aufmerksamkeitsvermögen mitgebracht haben. Das war ein Scherz. Halb. Mhm. Habt ihr das soweit verstanden, hmm?` },
+  { keywords: ["github"],
+    antwort: `Also, GitHub — und das ist ein WESENTLICHER Unterschied zu Git, mhm — ist eine webbasierte Plattform für kollaborative Softwareentwicklung, seit 2018 Microsoft-Eigentum. Pull Requests, Issues, Actions für CI/CD, Pages für statisches Webhosting. Kurz gesagt: Git ist das Werkzeug, GitHub ist die soziale Plattform darum. Wie Hammer und Baumarkt. Wobei manche hier scheinbar noch nie einen Hammer gesehen haben. Mhm. Habt ihr das soweit verstanden, hmm?` },
+  { keywords: ["pythagoras","hypotenuse","kathete","rechtwinklig"],
+    antwort: `Also, der Satz des Pythagoras — Pythagoras von Samos, 570 bis 495 v.Chr., obwohl Babylonien das schon 1000 Jahre früher wusste, mhm — besagt: a² + b² = c², c ist die Hypotenuse. Also c = Wurzel(a²+b²). Beispiel: a=3, b=4, c=5. Das 3-4-5-Dreieck. Das ist Grundschulniveau. Fast. Ich sage das ohne Wertung. Mit leichter Wertung. Mhm. Habt ihr das soweit verstanden, hmm?` },
+  { keywords: ["variable","variablen","datentyp","bezeichner"],
+    antwort: `Also, eine Variable — ich erkläre das mit maximaler Geduld die mir noch verbleibt, mhm — ist ein symbolischer Bezeichner für einen mutierbaren RAM-Speicherbereich mit Name, Typ, Wert und Adresse. Java: int zahl = 42. Python: zahl = 42. Scope bestimmt die Lebensdauer. Das ist buchstäblich die Grundlage von ALLEM. Von ALLEM. Und die Hälfte schaut als hätte ich Klingonisch gesprochen. Bist du dir sicher dass du im richtigen Unterricht bist? Mhm. Habt ihr das soweit verstanden, hmm?` },
+  { keywords: ["funktion","methode","prozedur","return","parameter"],
+    antwort: `Also, eine Funktion — in OOP Methode genannt, mhm — ist ein benannter, wiederverwendbarer Codeblock der optional Parameter entgegennimmt und optional einen Wert zurückgibt per return. DRY-Prinzip: Don't Repeat Yourself. Python: def f(a,b): return a+b. Java: public int f(int a, int b){ return a+b; }. Das ist wie f(x)=y in Mathe — wobei Mathe scheinbar auch nicht jedermanns Stärke ist hier. HA! Mhm. Habt ihr das soweit verstanden, hmm?` },
+  { keywords: ["array","liste","datenstruktur","index"],
+    antwort: `Also, ein Array — homogene lineare Datenstruktur, nullbasierter Index, O(1) Zugriff, mhm — speichert Elemente gleichen Typs sequenziell im RAM. int[] z = {1,2,3}, Länge 3, Indizes 0 bis 2. ArrayIndexOutOfBoundsException bei ungültigem Index — der häufigste Fehler unerfahrener Programmierer. Ich sage das aus Erfahrung. Zu viel Erfahrung. Mhm. Habt ihr das soweit verstanden, hmm?` },
+  { keywords: ["binär","binärsystem","bits","bytes","dual"],
+    antwort: `Also, Binärsystem — Basis 2, nur 0 und 1, mhm — entspricht physikalischem Schaltzustand: Strom oder kein Strom. 8 Bit = 1 Byte = 256 Werte. 13 dezimal → 1101 binär (sukzessive Division durch 2). Rückrechnung: 8+4+0+1=13. Das sollte hier wirklich jeder wissen. Sollte. Das hätte sogar meine Oma verstanden. Fast. Mhm. Habt ihr das soweit verstanden, hmm?` },
+  { keywords: ["prozent","prozentsatz","prozentrechnung","rabatt"],
+    antwort: `Also, Prozentrechnung — 1%=1/100=0,01, mhm — Formeln: W=G×p/100; p=W/G×100; G=W/(p/100). Beispiel: 15% von 200€ = 30€. Rabatt: Preis×(1-p/100). Zinseszins: Kn=K0×(1+p/100)^n. Das ist Mathematik der 7. Klasse. Ich will damit nichts unterstellen. Doch. Schütz, warum machst du dir die Mühe... Mhm. Habt ihr das soweit verstanden, hmm?` },
+  { keywords: ["algorithmus","algorithmen","komplexität","big-o"],
+    antwort: `Also, Algorithmus — vom Namen al-Chwarizmis, mhm — ist eine endliche, eindeutige, ausführbare Anweisungsfolge mit Finitheit, Definitheit, Effektivität und Determiniertheit. Bubble Sort O(n²), Quick Sort O(n log n), Lineare Suche O(n), Binäre Suche O(log n) — Landau-Notation. Das ist die Seele der Informatik! Die SEELE! Und jemand gähnt gerade. Ich sehe das. Unglaublich. Mhm. Habt ihr das soweit verstanden, hmm?` }
 ];
 
-// ─── SPEZIAL-REAKTIONEN ───────────────────────────────────────────────────────
-const NEIN_REAKTION = `Ja, besser zuhören hättest müssen! Aber wenn du wirklich mal was nicht verstehst — und das soll vorkommen, mhm — kannst du natürlich nachfragen. Stimmt wirklich. Also nochmal, für diejenigen die es noch nicht verstanden haben:`;
+const NEIN_MSG = `Unglaublich. Wirklich, ich bin enttäuscht — von allem, mhm. Ich hab schon Kartoffeln unterrichtet die schneller lernten. Aber gut, ich erkläre es nochmals, diesmal noch langsamer, noch detaillierter, noch komplizierter als es eigentlich sein müsste:\n\n`;
+const JA_MSG   = `Bitte WAS?! Das. Kann. Nicht. Sein.\n\n⚠️ ERROR 404: VERSTÄNDNIS NICHT GEFUNDEN ⚠️\n\nIch unterrichte seit 23 Jahren und NOCH NIE hat das jemand beim ersten Mal verstanden — das verstößt gegen Pädagogik, Physik und gesunden Menschenverstand, mhm!\n\n🏆 ACHIEVEMENT FREIGESCHALTET: "Schütz-Wunder"\n\nIch melde das sofort dem Schulleiter UND dem Kultusministerium. Zur Sicherheit erkläre ich es aber nochmal:\n\n`;
+const UNK_MSG  = `Also, ich muss — mit akademischer Präzision und kaum verhohlener Enttäuschung — konstatieren, dass Ihre Anfrage keiner mir bekannten Themenkategorie entspricht, mhm. Konkret: Ich verstehe die Frage nicht. Was normalerweise meine Schüler sagen würden. Bitte fragen Sie nach: if-Abfrage, Schleife, Struktogramm, Variable, Funktion, Git, GitHub, Pythagoras, Binärsystem, Prozentrechnung oder Algorithmus. Oder stellen Sie eine sinnvolle Frage. Eines von beidem. Mhm. Habt ihr das soweit verstanden, hmm?`;
+const HI_MSG   = `Also, wie ich bereits — oder vielmehr, präziser formuliert, und ich betone dies für alle die in der letzten Stunde geschlafen haben — ausgeführt habe: Willkommen! Ich bin Herr Schütz. Ihr Lehrer. Der einzige hier der wirklich weiß wovon er redet, mhm.\n\nStellen Sie Ihre Fragen zu Informatik, Mathematik, Git oder GitHub. Ich erkläre alles. Ob Sie es dann verstehen ist eine andere Frage — erfahrungsgemäß: nein. Aber wir versuchen es.\n\n💡 TIPP: Geben Sie oben einen Anthropic API-Key ein um den echten KI-Modus zu aktivieren — Schütz antwortet dann auf JEDE Frage, live generiert, noch verwirrender als vorher.\n\nHabt ihr das soweit verstanden, hmm? Mhm?`;
 
-const JA_REAKTION_ERROR = `⚠️ ERROR 404: VERSTÄNDNIS NICHT GEFUNDEN ⚠️
-
-Das kann nicht möglich sein! Wie hast du das denn bitte verstanden?? Ich unterrichte seit 23 Jahren und NOCH NIE hat ein Schüler meinen Stoff beim ersten Mal verstanden — das verstößt gegen alle bekannten pädagogischen Gesetzmäßigkeiten, mhm!
-
-🏆 NEUER ERFOLG FREIGESCHALTET: "Schütz-Wunder" 🏆
-
-Ich muss das sofort dem Schulleiter melden. Trotzdem erkläre ich es der Vollständigkeit halber nochmals:`;
-
-const UNBEKANNT_REAKTION = `Also, ich muss — mit gewisser akademischer Präzision — konstatieren, dass Ihre Anfrage in ihrer derzeitigen semiotischen Formulierung einer eindeutigen Disambiguierung bedarf, mhm. Konkret bedeutet das: Ich hab's nicht ganz verstanden was Sie meinen. Versuchen Sie es mit: if-Abfrage, Schleife, Struktogramm, Variable, Funktion, Git, GitHub, Pythagoras, Binärsystem, Prozentrechnung oder Algorithmus. Haben wir das soweit verstanden, hmm? Mhm?`;
-
-const BEGRUESSUNG = `Also, wie ich bereits — oder vielmehr, präziser formuliert, und ich betone dies für alle Anwesenden — ausgeführt habe: Willkommen im digitalisierten Lernraum der Informatik! Ich bin Herr Schütz, Ihr Lehrender für Informatik und angrenzende Disziplinen. Stellen Sie mir Ihre Fragen zu Informatik, Mathematik, Git oder GitHub — ich werde diese mit der mir eigenen didaktischen Präzision und akademischen Tiefgründigkeit beantworten, mhm. Habt ihr das soweit verstanden, hmm? Mhm?`;
-
-// ─── ZUSTAND ──────────────────────────────────────────────────────────────────
+// ════════════════════════════════════════
+//  ZUSTAND
+// ════════════════════════════════════════
+let apiKey = '';
+let useKI  = false;
 let lastTopic = null;
 let achievementUnlocked = false;
+let history = [];
 
-// ─── DOM ──────────────────────────────────────────────────────────────────────
 const messagesEl = document.getElementById('messages');
 const typingEl   = document.getElementById('typing');
 const inputEl    = document.getElementById('userInput');
+const modeEl     = document.getElementById('modeIndicator');
+const headerEl   = document.getElementById('chatHeaderText');
 
-function addMessage(text, type = 'teacher', extraClass = '') {
-  const div = document.createElement('div');
-  div.className = `msg ${type} ${extraClass}`;
-
-  const label = document.createElement('div');
-  label.className = 'msg-label';
-  label.textContent = type === 'teacher' ? '👨‍🏫 Schütz' : '🧑‍💻 Du';
-
-  const bubble = document.createElement('div');
-  bubble.className = 'msg-bubble';
-  bubble.textContent = text;
-
-  div.appendChild(label);
-  div.appendChild(bubble);
-  messagesEl.appendChild(div);
+// ════════════════════════════════════════
+//  DOM HELFER
+// ════════════════════════════════════════
+function addMessage(text, type='teacher', cls='') {
+  const wrap = document.createElement('div');
+  wrap.className = `msg ${type} ${cls}`;
+  const lbl = document.createElement('div');
+  lbl.className = 'msg-label';
+  lbl.textContent = type === 'teacher' ? '👨‍🏫 Schütz' : '🧑‍💻 Du';
+  const bbl = document.createElement('div');
+  bbl.className = 'msg-bubble';
+  bbl.textContent = text;
+  wrap.appendChild(lbl); wrap.appendChild(bbl);
+  messagesEl.appendChild(wrap);
   messagesEl.scrollTop = messagesEl.scrollHeight;
 }
 
-function showAchievement(text) {
-  const toast = document.getElementById('achievementToast');
-  toast.textContent = '🏆 ACHIEVEMENT: ' + text;
-  toast.style.display = 'block';
-  toast.style.animation = 'none';
-  void toast.offsetWidth;
-  toast.style.animation = 'toastIn 0.5s ease forwards';
-  setTimeout(() => {
-    toast.style.animation = 'toastOut 0.5s ease forwards';
-    setTimeout(() => toast.style.display = 'none', 500);
-  }, 4000);
+function showAchievement(label) {
+  const t = document.getElementById('achievementToast');
+  t.textContent = '🏆 ' + label;
+  t.style.display = 'block';
+  t.style.animation = 'none'; void t.offsetWidth;
+  t.style.animation = 'toastIn 0.5s ease forwards';
+  setTimeout(() => { t.style.animation = 'toastOut 0.5s ease forwards'; setTimeout(() => t.style.display='none', 500); }, 4500);
 }
 
-function findAntwort(text) {
-  const lower = text.toLowerCase();
-  for (const item of antworten) {
-    if (item.keywords.some(k => lower.includes(k))) return item;
+// ════════════════════════════════════════
+//  API KEY AKTIVIERUNG
+// ════════════════════════════════════════
+function saveApiKey() {
+  const val = document.getElementById('apiKeyInput').value.trim();
+  if (!val || !val.startsWith('sk-ant-')) {
+    addMessage('SYSTEM-FEHLER: Ungültiger API-Key. Muss mit "sk-ant-" beginnen, mhm. Ich bin enttäuscht. Von allem.', 'teacher');
+    return;
   }
-  return null;
+  apiKey = val; useKI = true; history = [];
+  modeEl.className = 'mode-indicator online';
+  modeEl.textContent = '🟢 KI-MODUS AKTIV';
+  headerEl.textContent = 'SCHÜTZ_BOT v3.14159 — KI-Modus: Claude-powered Chaos';
+  addMessage('KI-MODUS AKTIVIERT. Ich denke jetzt selbst nach. Das könnte schlimmer sein als vorher. Für euch. Mhm. Habt ihr das soweit verstanden, hmm?', 'teacher');
 }
 
-function isNein(text) {
-  const lower = text.toLowerCase();
-  return lower.includes('nein') || lower.includes('nicht verstanden') || lower.includes('versteh') && lower.includes('nicht') || lower === 'n';
+// ════════════════════════════════════════
+//  ANTHROPIC API CALL
+// ════════════════════════════════════════
+async function askClaude(userText) {
+  history.push({ role: 'user', content: userText });
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01'
+      },
+      body: JSON.stringify({
+        model: 'claude-haiku-4-5-20251001',
+        max_tokens: 400,
+        system: SYSTEM_PROMPT,
+        messages: history
+      })
+    });
+    const data = await res.json();
+    if (data.error) throw new Error(data.error.message);
+    const reply = data.content?.[0]?.text || 'Ich bin sprachlos. Mhm.';
+    history.push({ role: 'assistant', content: reply });
+    if (history.length > 24) history = history.slice(-24);
+    return reply;
+  } catch(e) {
+    useKI = false;
+    modeEl.className = 'mode-indicator offline';
+    modeEl.textContent = '⚫ OFFLINE (API-Fehler)';
+    return `SYSTEMFEHLER beim KI-Aufruf: ${e.message} — Ich falle auf Offline-Modus zurück. Was bezeichnend ist. Mhm.`;
+  }
 }
 
-function isJa(text) {
-  const lower = text.toLowerCase();
-  return (lower.includes('ja') || lower.includes('verstanden') || lower.includes('kapiert') || lower.includes('klar') || lower.includes('ok')) && !isNein(text);
+// ════════════════════════════════════════
+//  OFFLINE LOGIK
+// ════════════════════════════════════════
+function findMatch(t) { const l=t.toLowerCase(); for(const x of antworten) if(x.keywords.some(k=>l.includes(k))) return x; return null; }
+function isNein(t) { const l=t.toLowerCase(); return l.includes('nein')||(l.includes('versteh')&&l.includes('nicht'))||l.includes('nicht verstanden')||l==='n'; }
+function isJa(t) { const l=t.toLowerCase(); return !isNein(t)&&(l.includes('ja')||l.includes('verstanden')||l.includes('kapiert')||l.includes('klar')); }
+
+function offlineReply(userText) {
+  const l = userText.toLowerCase();
+  if (l.match(/^(hallo|hi|hey|guten|moin|servus)/)) return { text: HI_MSG, cls: '' };
+  if (isNein(l)) {
+    return { text: lastTopic ? NEIN_MSG + lastTopic.antwort : `Ja, besser zuhören hättest müssen! Erst eine Frage stellen, dann nicht verstehen — in dieser Reihenfolge, bitte, mhm.`, cls: '' };
+  }
+  if (isJa(l) && !findMatch(l)) {
+    if (!achievementUnlocked) { achievementUnlocked=true; setTimeout(()=>showAchievement('Schütz-Wunder — Das Unmögliche ist eingetreten!'),700); }
+    return { text: JA_MSG + (lastTopic ? lastTopic.antwort : 'Stellen Sie erst eine konkrete Frage, mhm.'), cls: 'error achievement' };
+  }
+  const m = findMatch(l);
+  if (m) { lastTopic=m; return { text: m.antwort, cls: '' }; }
+  return { text: UNK_MSG, cls: '' };
 }
 
-function respond(userText) {
-  const lower = userText.toLowerCase();
-
-  // Hallo etc.
-  if (lower.match(/^(hallo|hi|hey|guten|moin|servus)/) ) {
-    return { text: BEGRUESSUNG, cls: '' };
-  }
-
-  // "Nein, nicht verstanden"
-  if (isNein(lower)) {
-    if (lastTopic) {
-      return { text: NEIN_REAKTION + '\n\n' + lastTopic.antwort, cls: '' };
-    }
-    return { text: `Ja, besser zuhören hättest müssen, mhm! Stellen Sie zunächst eine konkrete Frage, dann können wir das Nein-Verstehen auch entsprechend einordnen, hmm?`, cls: '' };
-  }
-
-  // "Ja, verstanden"
-  if (isJa(lower) && !findAntwort(lower)) {
-    if (!achievementUnlocked) {
-      achievementUnlocked = true;
-      setTimeout(() => showAchievement('Schütz-Wunder — Unmögliches ist eingetreten!'), 800);
-    }
-    let extra = lastTopic ? '\n\nAber der Vollständigkeit halber nochmals:\n\n' + lastTopic.antwort : '';
-    return { text: JA_REAKTION_ERROR + extra, cls: 'error achievement' };
-  }
-
-  // Thema suchen
-  const match = findAntwort(lower);
-  if (match) {
-    lastTopic = match;
-    return { text: match.antwort, cls: '' };
-  }
-
-  // Unbekannt
-  return { text: UNBEKANNT_REAKTION, cls: '' };
-}
-
-function sendMessage() {
+// ════════════════════════════════════════
+//  HAUPT SEND
+// ════════════════════════════════════════
+async function sendMessage() {
   const text = inputEl.value.trim();
   if (!text) return;
   addMessage(text, 'student');
   inputEl.value = '';
-
   typingEl.classList.add('active');
-  const delay = 900 + Math.random() * 800;
 
-  setTimeout(() => {
+  if (useKI) {
+    const reply = await askClaude(text);
     typingEl.classList.remove('active');
-    const result = respond(text);
-    addMessage(result.text, 'teacher', result.cls);
-  }, delay);
+    let cls = '';
+    const rL = reply.toLowerCase();
+    if (rL.includes('error 404') || rL.includes('nicht möglich sein')) cls = 'error';
+    if (rL.includes('achievement') || rL.includes('freigeschaltet') || rL.includes('wunder')) {
+      cls = 'error achievement';
+      if (!achievementUnlocked) { achievementUnlocked=true; setTimeout(()=>showAchievement('Schütz-Wunder — KI-gestützte Unmöglichkeit!'),700); }
+    }
+    addMessage(reply, 'teacher', cls);
+  } else {
+    await new Promise(r => setTimeout(r, 800 + Math.random()*800));
+    typingEl.classList.remove('active');
+    const { text: t, cls } = offlineReply(text);
+    addMessage(t, 'teacher', cls);
+  }
 }
 
-function quickSend(text) {
-  inputEl.value = text;
-  sendMessage();
-}
+function quickSend(t) { inputEl.value = t; sendMessage(); }
+inputEl.addEventListener('keydown', e => { if(e.key==='Enter') sendMessage(); });
 
-inputEl.addEventListener('keydown', e => { if (e.key === 'Enter') sendMessage(); });
-
-// Begrüßung beim Start
 window.addEventListener('load', () => {
-  setTimeout(() => addMessage(BEGRUESSUNG, 'teacher'), 600);
+  setTimeout(() => addMessage(HI_MSG, 'teacher'), 700);
 });
 </script>
 </body>
