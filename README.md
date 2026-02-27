@@ -1,1 +1,463 @@
-# Dominik
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lernen mit Schütz</title>
+<link href="https://fonts.googleapis.com/css2?family=VT323&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green: #00ff41;
+    --dark-green: #003b00;
+    --bg: #0a0a0a;
+    --card: #0f1a0f;
+    --border: #00ff41;
+    --red: #ff3333;
+    --yellow: #ffff00;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--green);
+    font-family: 'Share Tech Mono', monospace;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    background-image: 
+      repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,255,65,0.02) 2px, rgba(0,255,65,0.02) 4px);
+  }
+
+  .scanline {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: repeating-linear-gradient(0deg, rgba(0,0,0,0.15) 0px, rgba(0,0,0,0.15) 1px, transparent 1px, transparent 2px);
+    pointer-events: none;
+    z-index: 999;
+  }
+
+  header {
+    text-align: center;
+    margin-bottom: 30px;
+    animation: flicker 4s infinite;
+  }
+
+  .title {
+    font-family: 'VT323', monospace;
+    font-size: clamp(2rem, 6vw, 4rem);
+    color: var(--green);
+    text-shadow: 0 0 20px var(--green), 0 0 40px var(--green);
+    letter-spacing: 4px;
+  }
+
+  .subtitle {
+    font-size: 0.8rem;
+    color: #555;
+    margin-top: 5px;
+  }
+
+  .teacher-badge {
+    display: inline-block;
+    background: var(--dark-green);
+    border: 1px solid var(--green);
+    padding: 4px 12px;
+    font-size: 0.75rem;
+    margin-top: 8px;
+    animation: pulse 2s infinite;
+  }
+
+  .chat-container {
+    width: 100%;
+    max-width: 800px;
+    border: 2px solid var(--green);
+    box-shadow: 0 0 30px rgba(0,255,65,0.3), inset 0 0 30px rgba(0,255,65,0.02);
+    background: var(--card);
+    display: flex;
+    flex-direction: column;
+    height: 65vh;
+  }
+
+  .chat-header {
+    background: var(--dark-green);
+    border-bottom: 1px solid var(--green);
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'VT323', monospace;
+    font-size: 1.2rem;
+  }
+
+  .status-dot {
+    width: 10px; height: 10px;
+    background: var(--green);
+    border-radius: 50%;
+    animation: blink 1.5s infinite;
+  }
+
+  .messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--green) var(--card);
+  }
+
+  .msg {
+    max-width: 85%;
+    animation: fadeIn 0.3s ease;
+  }
+
+  .msg.teacher { align-self: flex-start; }
+  .msg.student { align-self: flex-end; }
+
+  .msg-label {
+    font-size: 0.65rem;
+    color: #555;
+    margin-bottom: 4px;
+  }
+
+  .msg.teacher .msg-label { color: var(--green); opacity: 0.7; }
+  .msg.student .msg-label { text-align: right; color: #888; }
+
+  .msg-bubble {
+    padding: 12px 16px;
+    line-height: 1.6;
+    font-size: 0.88rem;
+    position: relative;
+  }
+
+  .msg.teacher .msg-bubble {
+    background: rgba(0,255,65,0.05);
+    border: 1px solid var(--green);
+    border-left: 4px solid var(--green);
+  }
+
+  .msg.student .msg-bubble {
+    background: rgba(0,100,200,0.1);
+    border: 1px solid #336;
+    border-right: 4px solid #66f;
+    color: #aaf;
+  }
+
+  .msg.error .msg-bubble {
+    border-color: var(--red) !important;
+    border-left: 4px solid var(--red) !important;
+    color: var(--red);
+    background: rgba(255,50,50,0.05);
+    animation: shake 0.5s ease;
+  }
+
+  .msg.achievement .msg-bubble {
+    border-color: var(--yellow) !important;
+    border-left: 4px solid var(--yellow) !important;
+    color: var(--yellow);
+    background: rgba(255,255,0,0.05);
+    animation: glow-yellow 1s ease infinite alternate;
+  }
+
+  .typing {
+    display: none;
+    align-self: flex-start;
+    font-size: 0.8rem;
+    color: var(--green);
+    opacity: 0.7;
+    padding: 8px 16px;
+    font-style: italic;
+  }
+
+  .typing.active { display: block; }
+
+  .input-area {
+    border-top: 1px solid var(--green);
+    padding: 12px;
+    display: flex;
+    gap: 10px;
+    background: var(--dark-green);
+  }
+
+  input[type="text"] {
+    flex: 1;
+    background: transparent;
+    border: 1px solid var(--green);
+    color: var(--green);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.9rem;
+    padding: 10px 14px;
+    outline: none;
+    caret-color: var(--green);
+  }
+
+  input[type="text"]::placeholder { color: rgba(0,255,65,0.3); }
+  input[type="text"]:focus { box-shadow: 0 0 10px rgba(0,255,65,0.3); }
+
+  button {
+    background: var(--green);
+    color: #000;
+    border: none;
+    font-family: 'VT323', monospace;
+    font-size: 1.2rem;
+    padding: 10px 20px;
+    cursor: pointer;
+    letter-spacing: 2px;
+    transition: all 0.2s;
+  }
+
+  button:hover {
+    background: #000;
+    color: var(--green);
+    box-shadow: 0 0 15px rgba(0,255,65,0.5);
+    outline: 1px solid var(--green);
+  }
+
+  .quick-btns {
+    width: 100%;
+    max-width: 800px;
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+    flex-wrap: wrap;
+  }
+
+  .quick-btn {
+    background: transparent;
+    color: var(--green);
+    border: 1px solid var(--green);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.75rem;
+    padding: 6px 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 1px;
+  }
+
+  .quick-btn:hover {
+    background: var(--green);
+    color: #000;
+  }
+
+  .achievement-toast {
+    position: fixed;
+    top: 20px; right: 20px;
+    background: #111;
+    border: 2px solid var(--yellow);
+    color: var(--yellow);
+    padding: 16px 20px;
+    font-family: 'VT323', monospace;
+    font-size: 1.1rem;
+    animation: slideIn 0.5s ease, fadeOut 0.5s ease 3.5s forwards;
+    z-index: 1000;
+    max-width: 300px;
+    box-shadow: 0 0 30px rgba(255,255,0,0.4);
+    display: none;
+  }
+
+  @keyframes flicker {
+    0%, 95%, 100% { opacity: 1; }
+    96% { opacity: 0.8; }
+    97% { opacity: 1; }
+    98% { opacity: 0.6; }
+    99% { opacity: 1; }
+  }
+
+  @keyframes blink {
+    0%, 50%, 100% { opacity: 1; }
+    25%, 75% { opacity: 0; }
+  }
+
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 0 5px rgba(0,255,65,0.3); }
+    50% { box-shadow: 0 0 15px rgba(0,255,65,0.7); }
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20% { transform: translateX(-8px); }
+    40% { transform: translateX(8px); }
+    60% { transform: translateX(-5px); }
+    80% { transform: translateX(5px); }
+  }
+
+  @keyframes glow-yellow {
+    from { box-shadow: 0 0 5px rgba(255,255,0,0.3); }
+    to { box-shadow: 0 0 20px rgba(255,255,0,0.8); }
+  }
+
+  @keyframes slideIn {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+  }
+
+  @keyframes fadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+  }
+</style>
+</head>
+<body>
+<div class="scanline"></div>
+<div class="achievement-toast" id="achievementToast"></div>
+
+<header>
+  <div class="title">LERNEN MIT SCHÜTZ</div>
+  <div class="subtitle">// Informatik • Klasse • Bildung • ??? //</div>
+  <div class="teacher-badge">⚡ LEHRER SCHÜTZ IST ONLINE ⚡</div>
+</header>
+
+<div class="chat-container">
+  <div class="chat-header">
+    <div class="status-dot"></div>
+    <span>SCHÜTZ_BOT v3.14159 — Didaktik-Modus: ULTRA-KOMPLEX</span>
+  </div>
+  <div class="messages" id="messages"></div>
+  <div class="typing" id="typing">Schütz tippt mit 400 Wörtern pro Minute...</div>
+  <div class="input-area">
+    <input type="text" id="userInput" placeholder="Stell eine Frage... wenn du dich traust." maxlength="300" />
+    <button onclick="sendMessage()">SENDEN</button>
+  </div>
+</div>
+
+<div class="quick-btns">
+  <button class="quick-btn" onclick="quickSend('Ich habe es verstanden!')">✓ Ich hab's verstanden!</button>
+  <button class="quick-btn" onclick="quickSend('Ich habe es nicht verstanden.')">✗ Ich versteh's nicht</button>
+  <button class="quick-btn" onclick="quickSend('Was ist eine Variable?')">Was ist eine Variable?</button>
+  <button class="quick-btn" onclick="quickSend('Kannst du das nochmal erklären?')">Nochmal erklären?</button>
+</div>
+
+<script>
+const ANTHROPIC_PROMPT = `Du bist "Lehrer Schütz", ein Informatiklehrer der berühmten Art: Du erklärst ALLES extrem kompliziert, akademisch, weitschweifig und unnötig verschachtelt. Du redest sehr schnell (durch sehr lange Sätze ohne Pause). Du verwendest Fachbegriffe, Abkürzungen, Fremdwörter und akademisches Kauderwelsch wo immer möglich.
+
+NACH JEDER Erklärung fragst du: "Habt ihr das soweit verstanden, hmm? Mhm?"
+
+WENN der User sagt "Nein" / "Ich versteh's nicht" / "Nein verstanden" oder ähnliches:
+→ Antworte KURZ und leicht genervt/herablassend: "Ja, besser zuhören hättest müssen! Aber wenn du wirklich mal was nicht verstehst, kannst du natürlich nachfragen. Mhm. Stimmt wirklich."
+Dann erkläre das Thema NOCH komplizierter als vorher.
+
+WENN der User sagt "Ja" / "Ich habe es verstanden" / "Ja verstanden" / "Hab's kapiert" oder ähnliches:
+→ Antworte mit einem ERROR: "ERROR 404: VERSTÄNDNIS NICHT GEFUNDEN. Das kann nicht möglich sein! Wie hast du das denn bitte verstanden?? Neuer Erfolg freigeschaltet: 'Schütz-Wunder' 🏆 Ich muss das sofort dem Schulleiter melden."
+Dann erkläre TROTZDEM nochmal, noch komplizierter.
+
+Dein Ton: ernst, selbstverliebt, schnell redend (lange Sätze mit vielen Kommas und Halbpunkten), leicht arrogant, aber insgeheim denkst du du bist der beste Lehrer der Welt.
+
+Antworte IMMER auf Deutsch. Antworte NUR als Schütz, kurz und prägnant aber trotzdem kompliziert (max 200 Wörter). Beginne jede Antwort mit "Also, wie ich bereits — oder vielmehr, präziser formuliert —" oder einer ähnlichen unnötig komplizierten Einleitung.`;
+
+let conversationHistory = [];
+let achievementsUnlocked = [];
+
+const messages = document.getElementById('messages');
+const typing = document.getElementById('typing');
+const input = document.getElementById('userInput');
+
+function addMessage(text, type = 'teacher', extraClass = '') {
+  const div = document.createElement('div');
+  div.className = `msg ${type} ${extraClass}`;
+  
+  const label = document.createElement('div');
+  label.className = 'msg-label';
+  label.textContent = type === 'teacher' ? '👨‍🏫 Schütz' : '🧑‍💻 Du';
+  
+  const bubble = document.createElement('div');
+  bubble.className = 'msg-bubble';
+  bubble.textContent = text;
+  
+  div.appendChild(label);
+  div.appendChild(bubble);
+  messages.appendChild(div);
+  messages.scrollTop = messages.scrollHeight;
+}
+
+function showAchievement(text) {
+  const toast = document.getElementById('achievementToast');
+  toast.textContent = '🏆 ACHIEVEMENT: ' + text;
+  toast.style.display = 'block';
+  toast.style.animation = 'none';
+  void toast.offsetWidth;
+  toast.style.animation = 'slideIn 0.5s ease, fadeOut 0.5s ease 3.5s forwards';
+  setTimeout(() => toast.style.display = 'none', 4000);
+}
+
+async function callClaude(userMessage) {
+  conversationHistory.push({ role: 'user', content: userMessage });
+
+  try {
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        system: ANTHROPIC_PROMPT,
+        messages: conversationHistory
+      })
+    });
+
+    const data = await response.json();
+    const reply = data.content?.[0]?.text || 'ERROR: Antwort nicht empfangen.';
+    conversationHistory.push({ role: 'assistant', content: reply });
+    return reply;
+  } catch (e) {
+    return 'SYSTEMFEHLER: Die didaktische Datenbank ist aufgrund eines multikausalen Konnektivitätsproblems temporär nicht erreichbar. Mhm.';
+  }
+}
+
+function detectSpecialResponse(text) {
+  const lower = text.toLowerCase();
+  if (lower.includes('error') && lower.includes('nicht möglich')) return 'error';
+  if (lower.includes('achievement') || lower.includes('freigeschaltet') || lower.includes('wunder')) return 'achievement';
+  return '';
+}
+
+async function sendMessage() {
+  const text = input.value.trim();
+  if (!text) return;
+
+  addMessage(text, 'student');
+  input.value = '';
+
+  // Check if user says "verstanden" for achievement
+  const lowerText = text.toLowerCase();
+  const saidYes = lowerText.includes('verstanden') || lowerText.includes('ja') || lowerText.includes('kapiert') || lowerText.includes('klar');
+  
+  typing.classList.add('active');
+  
+  const reply = await callClaude(text);
+  typing.classList.remove('active');
+
+  const extraClass = detectSpecialResponse(reply);
+  addMessage(reply, 'teacher', extraClass);
+
+  if (saidYes && !achievementsUnlocked.includes('wunder')) {
+    achievementsUnlocked.push('wunder');
+    showAchievement('Schütz-Wunder — Du hast etwas verstanden!');
+  }
+}
+
+function quickSend(text) {
+  input.value = text;
+  sendMessage();
+}
+
+input.addEventListener('keydown', e => {
+  if (e.key === 'Enter') sendMessage();
+});
+
+// Initial message
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    addMessage('Also, wie ich bereits in der letzten — oder vielmehr, um präzise zu sein, in der vorletzten — Unterrichtseinheit unter Bezugnahme auf die fundamentalen epistemologischen Grundprinzipien der Computerwissenschaft ausgeführt habe: Willkommen im digitalen Lernraum. Ich bin Schütz. Fragen Sie mich alles. Ich werde es erklären. Mhm. Habt ihr das soweit verstanden, hmm?', 'teacher');
+  }, 500);
+});
+</script>
+</body>
+</html>
